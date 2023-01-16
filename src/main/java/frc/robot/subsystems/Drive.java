@@ -11,7 +11,10 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.libraries.LazySparkMax;
 import frc.robot.libraries.SparkMaxFactory;
@@ -21,11 +24,14 @@ public class Drive extends SubsystemBase {
   // Hardware
   private final LazySparkMax mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
   private DifferentialDrive mDifferentialDrive;
+  private CommandXboxController driverController;
   
   private final Solenoid mShifter;
 
   private boolean mIsHighGear;
   private boolean mIsBrakeMode;
+
+  private static final double MAX_DRIVE_SPEED = 1.0;
 
   private void configureSpark(LazySparkMax sparkMax, boolean left, boolean master) {
     sparkMax.setInverted(!left);
@@ -33,7 +39,7 @@ public class Drive extends SubsystemBase {
     sparkMax.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
   }
 
-  public Drive() {
+  public Drive(CommandXboxController driveController) {
     // start all Talons in open loop mode
     mLeftMaster = SparkMaxFactory.createDefaultSparkMax(Constants.DRIVE_LEFT_MASTER);
     configureSpark(mLeftMaster, true, true);
@@ -58,11 +64,14 @@ public class Drive extends SubsystemBase {
     setBrakeMode(false);
 
     mDifferentialDrive = new DifferentialDrive(mLeftMaster, mRightMaster);
+
+    this.driverController = driveController;
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
   }
 
   public void ArcadeDrive(double xSpeed, double zRotation) {
@@ -70,6 +79,27 @@ public class Drive extends SubsystemBase {
 		SmartDashboard.putNumber("zRotation: ", zRotation);
 		mDifferentialDrive.arcadeDrive(xSpeed, zRotation);
 	}
+
+  private double calculateLeftSpeed() {
+    double speed = MAX_DRIVE_SPEED * ((driverController.getLeftY() * -1));
+    
+    return speed;
+  }
+
+  private double calculateRightSpeed() {
+    return 0;
+  }
+
+  public CommandBase drive() {
+    return run(() -> {
+      this.ArcadeDrive(
+        MAX_DRIVE_SPEED * driverController.getLeftY()*-1,
+        MAX_DRIVE_SPEED * driverController.getLeftX()*-1
+        );
+    });
+  }
+
+  
 
   public synchronized void setHighGear(boolean wantsHighGear) {
     if (wantsHighGear != mIsHighGear) {

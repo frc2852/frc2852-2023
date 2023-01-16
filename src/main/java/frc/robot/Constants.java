@@ -22,6 +22,16 @@ public final class Constants {
   public static final int DRIVER_CONTROLLER = 0;
   public static final int OPERATOR_CONTROLLER = 1;
 
+  // Joystick Mapping
+  public static final int LEFT_STICK_VERT = 1;
+  public static final int LEFT_STICK_HORZ = 0;
+  public static final int RIGHT_STICK_VERT = 5;
+  public static final int RIGHT_STICK_HORZ = 4;
+
+  //Trigger Mapping
+  public static int LEFT_TRIGGER = 2;
+  public static int RIGHT_TRIGGER = 3;
+
   // Drive
   public static final int DRIVE_LEFT_MASTER = 1;
   public static final int DRIVE_LEFT_SLAVE = 2;

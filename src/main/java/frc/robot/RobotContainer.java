@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -26,6 +27,8 @@ public class RobotContainer {
 
   private final CommandXboxController operatorController =
       new CommandXboxController(Constants.OPERATOR_CONTROLLER);
+
+  private final Drive m_drive = new Drive(driverController);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -49,7 +52,29 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+
+    driverController
+      .axisGreaterThan(Constants.LEFT_STICK_VERT, 0.1)
+      .whileTrue(
+        m_drive.drive()
+      );
+    driverController
+      .axisLessThan(Constants.LEFT_STICK_VERT, -0.1)
+      .whileTrue(
+        m_drive.drive()
+      );
+
+      driverController
+      .axisGreaterThan(Constants.LEFT_STICK_HORZ, 0.1)
+      .whileTrue(
+        m_drive.drive()
+      );
+      driverController
+      .axisLessThan(Constants.LEFT_STICK_HORZ, -0.1)
+      .whileTrue(
+        m_drive.drive()
+      );
+    // driverController.axisLessThan(1, -0.2).whileTrue(m_drive.Drive(driverController.getLeftY()));
   }
 
   /**
