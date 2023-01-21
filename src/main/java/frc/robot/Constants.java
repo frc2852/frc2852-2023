@@ -17,7 +17,10 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  
+
+  // Controller 
+  public static final double DEAD_ZONE = 0.05;
+
   // Controller mapping
   public static final int DRIVER_CONTROLLER = 0;
   public static final int OPERATOR_CONTROLLER = 1;
