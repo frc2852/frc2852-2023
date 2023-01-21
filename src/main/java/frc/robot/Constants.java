@@ -39,13 +39,20 @@ public final class Constants {
   public static final int DRIVE_RIGHT_MASTER = 3;
   public static final int DRIVE_RIGHT_SLAVE = 4;
 
+  //Intake
+  public static final int INTAKE_LEFT_MASTER = 5;
+  public static final int INTAKE_LEFT_SLAVE = 6;
+
+  public static final int INTAKE_RIGHT_MASTER = 7;
+  public static final int INTAKE_RIGHT_SLAVE = 8;
+
   // Gearbox
   public static final int DRIVE_GEAR_BOX_OPEN = 0;
   public static final int DRIVE_GEAR_BOX_CLOSE = 1;
-
-  // Solenoids
-  public static final int DRIVE_SHIFT = 0;
-
+  
   // Voltage
   public static final double DRIVE_VOLTAGE_RAMP_RATE = 0;
+
+  // PneumaticHub
+  public static final int PNEUMATIC_HUB = 11;
 }

@@ -7,7 +7,9 @@ package frc.robot;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ExampleSubsystem;
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -29,11 +31,15 @@ public class RobotContainer {
       new CommandXboxController(Constants.OPERATOR_CONTROLLER);
 
   private final Drive m_drive = new Drive(driverController);
-
+  
+  private final PneumaticHub m_pneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB);
+  //private final Intake m_intake = new Intake(driverController);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+
+    m_pneumaticHub.enableCompressorDigital();
   }
 
   /**
@@ -74,7 +80,16 @@ public class RobotContainer {
       .whileTrue(
         m_drive.drive()
       );
-    // driverController.axisLessThan(1, -0.2).whileTrue(m_drive.Drive(driverController.getLeftY()));
+
+      // driverController.rightBumper().whileTrue(
+      //   m_intake.ingestIntake()
+      //   );
+
+      //   driverController.leftBumper().whileTrue(
+      //   m_intake.regurgitateIntake()
+      //   );
+
+       driverController.b().toggleOnTrue(m_drive.shiftGear());
   }
 
   /**

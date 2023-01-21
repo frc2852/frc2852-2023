@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -26,12 +27,12 @@ public class Drive extends SubsystemBase {
   private DifferentialDrive mDifferentialDrive;
   private CommandXboxController driverController;
   
-  private final Solenoid mShifter;
+  private final DoubleSolenoid mShifter;
 
   private boolean mIsHighGear;
   private boolean mIsBrakeMode;
 
-  private static final double MAX_DRIVE_SPEED = 1.0;
+  private static final double MAX_DRIVE_SPEED = 0.3;
 
   private void configureSpark(LazySparkMax sparkMax, boolean left, boolean master) {
     sparkMax.setInverted(!left);
@@ -53,11 +54,10 @@ public class Drive extends SubsystemBase {
     mRightSlave = SparkMaxFactory.createPermanentSlaveSparkMax(Constants.DRIVE_RIGHT_SLAVE, mRightMaster);
     configureSpark(mRightSlave, false, false);
 
-    mShifter = new Solenoid(PneumaticsModuleType.REVPH, Constants.DRIVE_SHIFT);
+    mShifter = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH,Constants.DRIVE_GEAR_BOX_OPEN, Constants.DRIVE_GEAR_BOX_CLOSE);
 
     // force a solenoid message
-    mIsHighGear = false;
-    setHighGear(true);
+    mIsHighGear = true;
 
     // force a CAN message across
     mIsBrakeMode = true;
@@ -101,14 +101,21 @@ public class Drive extends SubsystemBase {
 
   
 
-  public synchronized void setHighGear(boolean wantsHighGear) {
-    if (wantsHighGear != mIsHighGear) {
-      mIsHighGear = wantsHighGear;
+  public synchronized CommandBase shiftGear() {
+    return runOnce(() -> {
       // Plumbed default high.
-      mShifter.set(!wantsHighGear);
-    }
-  }
+      if (mIsHighGear) {
+        mShifter.set(DoubleSolenoid.Value.kForward);
+      } else {
+        mShifter.set(DoubleSolenoid.Value.kReverse);
+      }
 
+
+      mIsHighGear = !mIsHighGear;
+      // mShifter.set(DoubleSolenoid.Value.kOff);
+   });
+  }
+  
   public synchronized void setBrakeMode(boolean shouldEnable) {
     if (mIsBrakeMode != shouldEnable) {
       mIsBrakeMode = shouldEnable;
