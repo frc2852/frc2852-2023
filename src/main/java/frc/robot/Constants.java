@@ -43,11 +43,9 @@ public final class Constants {
   public static final int DRIVE_RIGHT_SLAVE = 4;
 
   //Intake
-  public static final int INTAKE_LEFT_MASTER = 5;
-  public static final int INTAKE_LEFT_SLAVE = 6;
-
-  public static final int INTAKE_RIGHT_MASTER = 7;
-  public static final int INTAKE_RIGHT_SLAVE = 8;
+  public static final int INTAKE_LEFT_TOP = 5;
+  public static final int INTAKE_LEFT_BOTTOM = 6;
+  public static final int INTAKE_RIGHT_BOTTOM = 7;
 
   // Gearbox
   public static final int DRIVE_GEAR_BOX_OPEN = 0;
@@ -58,4 +56,8 @@ public final class Constants {
 
   // PneumaticHub
   public static final int PNEUMATIC_HUB = 11;
+
+  //Limit Switches
+  //public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 0;
+  //public static final int TOP_INTAKE_LIMIT_SWITCH = 0;
 }

@@ -28,7 +28,7 @@ public class RobotContainer {
   private final Drive m_drive = new Drive(driverController);
   
   private final PneumaticHub m_pneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB);
-  //private final Intake m_intake = new Intake(driverController);
+  private final Intake m_intake = new Intake(driverController);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -53,33 +53,41 @@ public class RobotContainer {
     driverController
       .axisGreaterThan(Constants.LEFT_STICK_VERT, Constants.DEAD_ZONE)
       .whileTrue(
-        m_drive.drive()
-      );
+      m_drive.drive()
+    );
     driverController
       .axisLessThan(Constants.LEFT_STICK_VERT, -Constants.DEAD_ZONE)
       .whileTrue(
-        m_drive.drive()
-      );
+      m_drive.drive()
+    );
 
       driverController
       .axisGreaterThan(Constants.LEFT_STICK_HORZ, Constants.DEAD_ZONE)
       .whileTrue(
-        m_drive.drive()
-      );
+      m_drive.drive()
+    );
       driverController
       .axisLessThan(Constants.LEFT_STICK_HORZ, -Constants.DEAD_ZONE)
       .whileTrue(
-        m_drive.drive()
+      m_drive.drive()
+    );
+
+       driverController.rightBumper().toggleOnTrue(
+        m_intake.ingestIntake()
       );
 
-      // driverController.rightBumper().whileTrue(
-      //   m_intake.ingestIntake()
-      //   );
+      driverController.leftBumper().toggleOnTrue(
+        m_intake.regurgitateIntake()
+      );
 
-      //   driverController.leftBumper().whileTrue(
-      //   m_intake.regurgitateIntake()
-      //   );
+      driverController.rightBumper().toggleOnFalse(
+        m_intake.stopIntake()
+      );
 
+      driverController.leftBumper().toggleOnFalse(
+        m_intake.stopIntake()
+      );
+      
        driverController.b().toggleOnTrue(m_drive.shiftGear());
   }
 
