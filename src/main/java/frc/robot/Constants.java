@@ -18,7 +18,7 @@ package frc.robot;
  */
 public final class Constants {
 
-  // Controller 
+  // Controller
   public static final double DEAD_ZONE = 0.05;
 
   // Controller mapping
@@ -31,7 +31,7 @@ public final class Constants {
   public static final int RIGHT_STICK_VERT = 5;
   public static final int RIGHT_STICK_HORZ = 4;
 
-  //Trigger Mapping
+  // Trigger Mapping
   public static int LEFT_TRIGGER = 2;
   public static int RIGHT_TRIGGER = 3;
 
@@ -42,7 +42,7 @@ public final class Constants {
   public static final int DRIVE_RIGHT_MASTER = 3;
   public static final int DRIVE_RIGHT_SLAVE = 4;
 
-  //Intake
+  // Intake
   public static final int INTAKE_LEFT_TOP = 5;
   public static final int INTAKE_LEFT_BOTTOM = 6;
   public static final int INTAKE_RIGHT_BOTTOM = 7;
@@ -50,14 +50,16 @@ public final class Constants {
   // Gearbox
   public static final int DRIVE_GEAR_BOX_OPEN = 0;
   public static final int DRIVE_GEAR_BOX_CLOSE = 1;
-  
+
   // Voltage
   public static final double DRIVE_VOLTAGE_RAMP_RATE = 0;
 
   // PneumaticHub
   public static final int PNEUMATIC_HUB = 11;
 
-  //Limit Switches
-  //public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 0;
-  //public static final int TOP_INTAKE_LIMIT_SWITCH = 0;
+  // Limit Switches
+  public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 1;
+  public static final int TOP_INTAKE_LIMIT_SWITCH = 0;
+
+  // public static final int DEMO_LIMIT = 9;
 }

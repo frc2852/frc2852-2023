@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -64,6 +65,8 @@ public class Drive extends SubsystemBase {
     this.driverController = driveController;
   }
 
+  DigitalInput limitSwitch = new DigitalInput(9);
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -82,6 +85,7 @@ public class Drive extends SubsystemBase {
   private double calculateRightSpeed() {
     return 0;
   }
+
 
   public CommandBase drive() {
     return run(() -> {
