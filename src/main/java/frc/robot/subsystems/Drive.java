@@ -65,8 +65,6 @@ public class Drive extends SubsystemBase {
     this.driverController = driveController;
   }
 
-  DigitalInput limitSwitch = new DigitalInput(9);
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

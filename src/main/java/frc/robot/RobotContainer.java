@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import frc.robot.commands.IntakeCommands.IngestIntakeCommand;
+import frc.robot.commands.IntakeCommands.RegurgitateIntakeCommand;
+import frc.robot.commands.IntakeCommands.StopIntakeCommand;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj.PneumaticHub;
@@ -29,11 +32,13 @@ public class RobotContainer {
   
   private final PneumaticHub m_pneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB);
   private final Intake m_intake = new Intake(driverController);
+  private final IngestIntakeCommand m_ingestIntakeCommand = new IngestIntakeCommand(m_intake);
+  private final IngestIntakeCommand m_regurgitateIntakeCommand = new IngestIntakeCommand(m_intake);
+  private final IngestIntakeCommand m_stopIntakeCommand = new IngestIntakeCommand(m_intake);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
-
     m_pneumaticHub.enableCompressorDigital();
   }
 
@@ -72,21 +77,13 @@ public class RobotContainer {
       m_drive.drive()
     );
 
-       driverController.rightBumper().toggleOnTrue(
-        m_intake.ingestIntake()
-      );
+      driverController.rightBumper().toggleOnTrue(m_ingestIntakeCommand);
 
-      driverController.leftBumper().toggleOnTrue(
-        m_intake.regurgitateIntake()
-      );
+      driverController.leftBumper().toggleOnTrue(m_regurgitateIntakeCommand);
 
-      driverController.rightBumper().toggleOnFalse(
-        m_intake.stopIntake()
-      );
+      driverController.rightBumper().toggleOnFalse(m_stopIntakeCommand);
 
-      driverController.leftBumper().toggleOnFalse(
-        m_intake.stopIntake()
-      );
+      driverController.leftBumper().toggleOnFalse(m_stopIntakeCommand);
       
        driverController.b().toggleOnTrue(m_drive.shiftGear());
   }

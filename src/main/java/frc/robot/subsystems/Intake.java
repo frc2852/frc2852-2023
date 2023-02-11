@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
@@ -51,22 +50,13 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Motor bus voltage", mLeftBottom.getBusVoltage());
     }
 
-    public CommandBase ingestIntake() {
-        return run(() -> {
-            // if (mTopSwitch) {
-            // this.stopIntakeTop();
-
-            // } else {
-            // mLeftTop.set(-MAX_INTAKE_SPEED);
-            // }
-
-            mLeftBottom.set(-MAX_INTAKE_SPEED);
-            mRightBottom.set(-MAX_INTAKE_SPEED);
-        });
+    public void ingestIntake() {
+        mLeftBottom.set(-MAX_INTAKE_SPEED);
+        mRightBottom.set(-MAX_INTAKE_SPEED);
     }
 
-    public CommandBase regurgitateIntake() {
-        return run(() -> {
+    public void regurgitateIntake() {
+        
             // if (mTopSwitch) {
             // this.stopIntakeTop();
             // mLeftTop.set(0);
@@ -76,14 +66,11 @@ public class Intake extends SubsystemBase {
 
             mLeftBottom.set(MAX_INTAKE_SPEED);
             mRightBottom.set(MAX_INTAKE_SPEED);
-        });
     }
 
-    public CommandBase stopIntake() {
-        return run(() -> {
-            stopIntakeBottom();
-            stopIntakeTop();
-        });
+    public void stopIntake() {
+        stopIntakeBottom();
+        stopIntakeTop();
     }
 
     public void stopIntakeTop() {
