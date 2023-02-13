@@ -55,40 +55,42 @@ public class RobotContainer {
       .whileTrue(
       m_drive.drive()
     );
+
     driverController
       .axisLessThan(Constants.LEFT_STICK_VERT, -Constants.DEAD_ZONE)
       .whileTrue(
       m_drive.drive()
     );
 
-      driverController
+     driverController
       .axisGreaterThan(Constants.LEFT_STICK_HORZ, Constants.DEAD_ZONE)
       .whileTrue(
       m_drive.drive()
     );
-      driverController
+
+     driverController
       .axisLessThan(Constants.LEFT_STICK_HORZ, -Constants.DEAD_ZONE)
       .whileTrue(
       m_drive.drive()
     );
 
-       driverController.rightBumper().toggleOnTrue(
-        m_intake.ingestIntake()
-      );
+    driverController.rightBumper().toggleOnTrue(
+      m_intake.ingestIntake()
+    );
 
-      driverController.leftBumper().toggleOnTrue(
-        m_intake.regurgitateIntake()
-      );
+    driverController.leftBumper().toggleOnTrue(
+      m_intake.regurgitateIntake()
+    );
 
-      driverController.rightBumper().toggleOnFalse(
-        m_intake.stopIntake()
-      );
+    driverController.rightBumper().toggleOnFalse(
+      m_intake.stopIntake()
+    );
 
-      driverController.leftBumper().toggleOnFalse(
-        m_intake.stopIntake()
-      );
-      
-       driverController.b().toggleOnTrue(m_drive.shiftGear());
+    driverController.leftBumper().toggleOnFalse(
+      m_intake.stopIntake()
+    );
+    
+    driverController.b().toggleOnTrue(m_drive.shiftGear());
   }
 
   /**
