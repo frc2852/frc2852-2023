@@ -33,8 +33,8 @@ public class RobotContainer {
   private final PneumaticHub m_pneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB);
   private final Intake m_intake = new Intake(driverController);
   private final IngestIntakeCommand m_ingestIntakeCommand = new IngestIntakeCommand(m_intake);
-  private final IngestIntakeCommand m_regurgitateIntakeCommand = new IngestIntakeCommand(m_intake);
-  private final IngestIntakeCommand m_stopIntakeCommand = new IngestIntakeCommand(m_intake);
+  private final RegurgitateIntakeCommand m_regurgitateIntakeCommand = new RegurgitateIntakeCommand(m_intake);
+  private final StopIntakeCommand m_stopIntakeCommand = new StopIntakeCommand(m_intake);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings

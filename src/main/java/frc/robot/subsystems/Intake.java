@@ -14,7 +14,7 @@ public class Intake extends SubsystemBase {
 
     private DigitalInput mIntakeLimitSwitch;
 
-    private static final double MAX_INTAKE_SPEED = 1;
+    private static final double MAX_INTAKE_SPEED = 0.05;
 
     private void configureSpark(LazySparkMax sparkMax, boolean left, boolean master) {
         sparkMax.setInverted(!left);
@@ -37,7 +37,6 @@ public class Intake extends SubsystemBase {
     }
 
     boolean mIntakeLimitSwitchState = false;
-    boolean mTopSwitch = false;
 
     @Override
     public void periodic() {
@@ -51,21 +50,31 @@ public class Intake extends SubsystemBase {
     }
 
     public void ingestIntake() {
-        mLeftBottom.set(-MAX_INTAKE_SPEED);
-        mRightBottom.set(-MAX_INTAKE_SPEED);
+        if (mIntakeLimitSwitchState) {
+            this.stopIntake();
+            } else {
+                //mTop.set(-MAX_INTAKE_SPEED);
+                mLeftBottom.set(-MAX_INTAKE_SPEED);
+                mRightBottom.set(-MAX_INTAKE_SPEED);
+            }
+            //mTop.set(MAX_INTAKE_SPEED);
+            mLeftBottom.set(-MAX_INTAKE_SPEED);
+            mRightBottom.set(-MAX_INTAKE_SPEED);
     }
 
     public void regurgitateIntake() {
         
-            // if (mTopSwitch) {
-            // this.stopIntakeTop();
-            // mLeftTop.set(0);
-            // } else {
-            // mLeftTop.set(MAX_INTAKE_SPEED);
-            // }
+             if (mIntakeLimitSwitchState) {
+             this.stopIntake();
+             } else {
+                //mTop.set(MAX_INTAKE_SPEED);
+                mLeftBottom.set(MAX_INTAKE_SPEED);
+                mRightBottom.set(MAX_INTAKE_SPEED);
+             }
+             //mTop.set(MAX_INTAKE_SPEED);
+             mLeftBottom.set(MAX_INTAKE_SPEED);
+             mRightBottom.set(MAX_INTAKE_SPEED);
 
-            mLeftBottom.set(MAX_INTAKE_SPEED);
-            mRightBottom.set(MAX_INTAKE_SPEED);
     }
 
     public void stopIntake() {
@@ -74,7 +83,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void stopIntakeTop() {
-        // mLeftTop.set(0);
+        mTop.set(0);
     }
 
     public void stopIntakeBottom() {
