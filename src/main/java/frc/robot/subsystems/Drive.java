@@ -88,8 +88,8 @@ public class Drive extends SubsystemBase {
   public CommandBase drive() {
     return run(() -> {
       this.ArcadeDrive(
-          MAX_DRIVE_SPEED * driverController.getLeftY() * -1,
-          MAX_DRIVE_SPEED * driverController.getLeftX() * -1);
+        MAX_DRIVE_SPEED * driverController.getLeftY() * -1,
+        MAX_DRIVE_SPEED * driverController.getLeftX() * -1);
     });
   }
 

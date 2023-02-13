@@ -60,18 +60,20 @@ public class RobotContainer {
       .whileTrue(
       m_drive.drive()
     );
+
     driverController
       .axisLessThan(Constants.LEFT_STICK_VERT, -Constants.DEAD_ZONE)
       .whileTrue(
       m_drive.drive()
     );
 
-      driverController
+     driverController
       .axisGreaterThan(Constants.LEFT_STICK_HORZ, Constants.DEAD_ZONE)
       .whileTrue(
       m_drive.drive()
     );
-      driverController
+
+     driverController
       .axisLessThan(Constants.LEFT_STICK_HORZ, -Constants.DEAD_ZONE)
       .whileTrue(
       m_drive.drive()
