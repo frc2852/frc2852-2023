@@ -43,6 +43,7 @@ public class Intake extends SubsystemBase {
         // This method will be called once per scheduler run
         mIntakeLimitSwitchState = mIntakeLimitSwitch.get();
 
+        SmartDashboard.putBoolean(("Limit switch state"), mIntakeLimitSwitchState); //use stored value instead of getting value again
         SmartDashboard.putNumber("Motor open loop ramp rate", mLeftBottom.getOpenLoopRampRate());
         SmartDashboard.putNumber("Motor speed", mLeftBottom.get());
         SmartDashboard.putNumber("Motor applied output", mLeftBottom.getAppliedOutput());
