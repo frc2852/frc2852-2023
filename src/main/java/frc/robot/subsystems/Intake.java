@@ -52,29 +52,21 @@ public class Intake extends SubsystemBase {
     public void ingestIntake() {
         if (mIntakeLimitSwitchState) {
             this.stopIntake();
-            } else {
-                //mTop.set(-MAX_INTAKE_SPEED);
-                mLeftBottom.set(-MAX_INTAKE_SPEED);
-                mRightBottom.set(-MAX_INTAKE_SPEED);
-            }
-            //mTop.set(MAX_INTAKE_SPEED);
+        } else {
+            //mTop.set(-MAX_INTAKE_SPEED);
             mLeftBottom.set(-MAX_INTAKE_SPEED);
             mRightBottom.set(-MAX_INTAKE_SPEED);
+        }
     }
 
     public void regurgitateIntake() {
-        
-             if (mIntakeLimitSwitchState) {
-             this.stopIntake();
-             } else {
-                //mTop.set(MAX_INTAKE_SPEED);
-                mLeftBottom.set(MAX_INTAKE_SPEED);
-                mRightBottom.set(MAX_INTAKE_SPEED);
-             }
-             //mTop.set(MAX_INTAKE_SPEED);
-             mLeftBottom.set(MAX_INTAKE_SPEED);
-             mRightBottom.set(MAX_INTAKE_SPEED);
-
+        if (mIntakeLimitSwitchState) {
+            this.stopIntake();
+        } else {
+            //mTop.set(MAX_INTAKE_SPEED);
+            mLeftBottom.set(MAX_INTAKE_SPEED);
+            mRightBottom.set(MAX_INTAKE_SPEED);
+        }
     }
 
     public void stopIntake() {
@@ -83,6 +75,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void stopIntakeTop() {
+        //deprecated
         mTop.set(0);
     }
 
