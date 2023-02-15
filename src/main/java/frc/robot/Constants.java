@@ -60,6 +60,4 @@ public final class Constants {
   // Limit Switches
   public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 1;
   public static final int TOP_INTAKE_LIMIT_SWITCH = 0;
-
-  // public static final int DEMO_LIMIT = 9;
 }

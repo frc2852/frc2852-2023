@@ -14,7 +14,7 @@ public class Intake extends SubsystemBase {
 
     private DigitalInput mIntakeLimitSwitch;
 
-    private static final double MAX_INTAKE_SPEED = 0.05;
+    private static final double MAX_INTAKE_SPEED = 0.5;
 
     private void configureSpark(LazySparkMax sparkMax, boolean left, boolean master) {
         sparkMax.setInverted(!left);
@@ -47,33 +47,28 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Motor speed", mLeftBottom.get());
         SmartDashboard.putNumber("Motor applied output", mLeftBottom.getAppliedOutput());
         SmartDashboard.putNumber("Motor bus voltage", mLeftBottom.getBusVoltage());
+        SmartDashboard.putBoolean("Limit Switch", mIntakeLimitSwitch.get());
     }
 
     public void ingestIntake() {
-        if (mIntakeLimitSwitchState) {
+        if (!mIntakeLimitSwitchState) {
             this.stopIntake();
             } else {
                 //mTop.set(-MAX_INTAKE_SPEED);
                 mLeftBottom.set(-MAX_INTAKE_SPEED);
                 mRightBottom.set(-MAX_INTAKE_SPEED);
             }
-            //mTop.set(MAX_INTAKE_SPEED);
-            mLeftBottom.set(-MAX_INTAKE_SPEED);
-            mRightBottom.set(-MAX_INTAKE_SPEED);
     }
 
     public void regurgitateIntake() {
         
-             if (mIntakeLimitSwitchState) {
+             if (!mIntakeLimitSwitchState) {
              this.stopIntake();
              } else {
                 //mTop.set(MAX_INTAKE_SPEED);
                 mLeftBottom.set(MAX_INTAKE_SPEED);
                 mRightBottom.set(MAX_INTAKE_SPEED);
              }
-             //mTop.set(MAX_INTAKE_SPEED);
-             mLeftBottom.set(MAX_INTAKE_SPEED);
-             mRightBottom.set(MAX_INTAKE_SPEED);
 
     }
 
