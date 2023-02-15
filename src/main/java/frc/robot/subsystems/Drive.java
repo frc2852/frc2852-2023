@@ -75,16 +75,7 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("zRotation: ", zRotation);
     mDifferentialDrive.arcadeDrive(xSpeed, zRotation);
   }
-
-  private double calculateLeftSpeed() {
-    return 0;
-  }
-
-  private double calculateRightSpeed() {
-    return 0;
-  }
-
-
+  
   public CommandBase drive() {
     return run(() -> {
       this.ArcadeDrive(
