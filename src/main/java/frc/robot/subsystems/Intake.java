@@ -1,7 +1,13 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
@@ -13,13 +19,18 @@ public class Intake extends SubsystemBase {
     private final LazySparkMax mTop, mRightBottom, mLeftBottom;
 
     private DigitalInput mIntakeLimitSwitch;
+    private DoubleSolenoid mIntakeSolenoid;
+    private boolean mIntakeIsInCubeState = false;
 
-    private static final double MAX_INTAKE_SPEED = 0.5;
+    private static final double MAX_INTAKE_SPEED = 0.3;
+    private static final double RAMP_RATE = 10;
 
-    private void configureSpark(LazySparkMax sparkMax, boolean left, boolean master) {
-        sparkMax.setInverted(!left);
+    private void configureSpark(LazySparkMax sparkMax, boolean invert) {
+        sparkMax.setInverted(invert);
+        sparkMax.setIdleMode(IdleMode.kBrake);
         sparkMax.enableVoltageCompensation(12.0);
-        sparkMax.setOpenLoopRampRate(10);
+        sparkMax.setOpenLoopRampRate(RAMP_RATE);
+        sparkMax.burnFlash();
     }
 
     public Intake(CommandXboxController driveController) {
@@ -27,13 +38,17 @@ public class Intake extends SubsystemBase {
         mIntakeLimitSwitch = new DigitalInput(Constants.BOTTOM_INTAKE_LIMIT_SWITCH);
 
         mTop = SparkMaxFactory.createDefaultSparkMax(Constants.INTAKE_LEFT_TOP);
-        configureSpark(mTop, true, true);
+        configureSpark(mTop, false);
 
         mLeftBottom = SparkMaxFactory.createDefaultSparkMax(Constants.INTAKE_LEFT_BOTTOM);
-        configureSpark(mLeftBottom, true, false);
+        configureSpark(mLeftBottom, false);
 
         mRightBottom = SparkMaxFactory.createDefaultSparkMax(Constants.INTAKE_RIGHT_BOTTOM);
-        configureSpark(mRightBottom, false, true);
+        configureSpark(mRightBottom, true);
+
+        mIntakeSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH, Constants.INTAKE_OPEN,
+                Constants.INTAKE_OPEN);
+        setDefaultPosition(DoubleSolenoid.Value.kForward);
     }
 
     boolean mIntakeLimitSwitchState = false;
@@ -50,39 +65,46 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putBoolean("Limit Switch", mIntakeLimitSwitch.get());
     }
 
-    public void ingestIntake() {
-        if (!mIntakeLimitSwitchState) {
-            this.stopIntake();
+    public CommandBase ingestIntake(boolean mIsCube) {
+        return run(() -> {
+            if (mIsCube) {
+                setDefaultPosition(DoubleSolenoid.Value.kReverse);
             } else {
-                //mTop.set(-MAX_INTAKE_SPEED);
-                mLeftBottom.set(-MAX_INTAKE_SPEED);
-                mRightBottom.set(-MAX_INTAKE_SPEED);
+                setDefaultPosition(DoubleSolenoid.Value.kForward);
             }
+
+            if (!mIntakeLimitSwitchState) {
+                this.stopIntake();
+            } else {
+                setIntakeSpeeds(-MAX_INTAKE_SPEED, RAMP_RATE);
+            }
+        });
     }
 
-    public void regurgitateIntake() {
-        
-             if (!mIntakeLimitSwitchState) {
-             this.stopIntake();
-             } else {
-                //mTop.set(MAX_INTAKE_SPEED);
-                mLeftBottom.set(MAX_INTAKE_SPEED);
-                mRightBottom.set(MAX_INTAKE_SPEED);
-             }
-
+    public CommandBase regurgitateIntake() {
+        return run(() -> {
+            setIntakeSpeeds(MAX_INTAKE_SPEED, RAMP_RATE);
+        });
     }
 
-    public void stopIntake() {
-        stopIntakeBottom();
-        stopIntakeTop();
+    public CommandBase stopIntake() {
+        return run(() -> {
+            setIntakeSpeeds(0, 0);
+        });
     }
 
-    public void stopIntakeTop() {
-        mTop.set(0);
+    public void setIntakeSpeeds(double motorSpeed, double rampRate) {
+        mTop.setOpenLoopRampRate(rampRate);
+        mRightBottom.setOpenLoopRampRate(rampRate);
+        mLeftBottom.setOpenLoopRampRate(rampRate);
+
+        mTop.set(motorSpeed);
+        mLeftBottom.set(motorSpeed);
+        mRightBottom.set(motorSpeed);
     }
 
-    public void stopIntakeBottom() {
-        mLeftBottom.set(0);
-        mRightBottom.set(0);
+    public void setDefaultPosition(Value solenoidPosition) {
+        mIntakeIsInCubeState = (solenoidPosition == DoubleSolenoid.Value.kReverse);
+        mIntakeSolenoid.set(solenoidPosition);
     }
 }

@@ -47,6 +47,9 @@ public final class Constants {
   public static final int INTAKE_LEFT_BOTTOM = 6;
   public static final int INTAKE_RIGHT_BOTTOM = 7;
 
+  public static final int INTAKE_OPEN = 2;
+  public static final int INTAKE_CLOSE = 3;
+
   // Gearbox
   public static final int DRIVE_GEAR_BOX_OPEN = 0;
   public static final int DRIVE_GEAR_BOX_CLOSE = 1;
