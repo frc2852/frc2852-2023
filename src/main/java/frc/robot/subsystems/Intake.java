@@ -11,12 +11,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
-import frc.robot.libraries.LazySparkMax;
-import frc.robot.libraries.SparkMaxFactory;
+import frc.robot.libraries.SparkMaxExtended;
 
 public class Intake extends SubsystemBase {
 
-    private final LazySparkMax mTop, mRightBottom, mLeftBottom;
+    private final SparkMaxExtended mRightBottom, mLeftBottom;
 
     private DigitalInput mIntakeLimitSwitch;
     private DoubleSolenoid mIntakeSolenoid;
@@ -25,7 +24,7 @@ public class Intake extends SubsystemBase {
     private static final double MAX_INTAKE_SPEED = 0.3;
     private static final double RAMP_RATE = 10;
 
-    private void configureSpark(LazySparkMax sparkMax, boolean invert) {
+    private void configureSpark(SparkMaxExtended sparkMax, boolean invert) {
         sparkMax.setInverted(invert);
         sparkMax.setIdleMode(IdleMode.kBrake);
         sparkMax.enableVoltageCompensation(12.0);
@@ -37,13 +36,10 @@ public class Intake extends SubsystemBase {
 
         mIntakeLimitSwitch = new DigitalInput(Constants.BOTTOM_INTAKE_LIMIT_SWITCH);
 
-        mTop = SparkMaxFactory.createDefaultSparkMax(Constants.INTAKE_LEFT_TOP);
-        configureSpark(mTop, false);
-
-        mLeftBottom = SparkMaxFactory.createDefaultSparkMax(Constants.INTAKE_LEFT_BOTTOM);
+        mLeftBottom = new SparkMaxExtended(Constants.INTAKE_LEFT_BOTTOM);
         configureSpark(mLeftBottom, false);
 
-        mRightBottom = SparkMaxFactory.createDefaultSparkMax(Constants.INTAKE_RIGHT_BOTTOM);
+        mRightBottom = new SparkMaxExtended(Constants.INTAKE_RIGHT_BOTTOM);
         configureSpark(mRightBottom, true);
 
         mIntakeSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH, Constants.INTAKE_OPEN,
@@ -94,11 +90,9 @@ public class Intake extends SubsystemBase {
     }
 
     public void setIntakeSpeeds(double motorSpeed, double rampRate) {
-        mTop.setOpenLoopRampRate(rampRate);
         mRightBottom.setOpenLoopRampRate(rampRate);
         mLeftBottom.setOpenLoopRampRate(rampRate);
 
-        mTop.set(motorSpeed);
         mLeftBottom.set(motorSpeed);
         mRightBottom.set(motorSpeed);
     }

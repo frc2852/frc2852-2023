@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean
@@ -36,19 +38,30 @@ public final class Constants {
   public static int RIGHT_TRIGGER = 3;
 
   // Drive
-  public static final int DRIVE_LEFT_MASTER = 1;
-  public static final int DRIVE_LEFT_SLAVE = 2;
+  public static final int DRIVE_LEFT_LEADER = 1;
+  public static final int DRIVE_LEFT_FOLLOWER = 2;
 
-  public static final int DRIVE_RIGHT_MASTER = 3;
-  public static final int DRIVE_RIGHT_SLAVE = 4;
+  public static final int DRIVE_RIGHT_LEADER = 3;
+  public static final int DRIVE_RIGHT_FOLLOWER = 4;
 
   // Intake
-  public static final int INTAKE_LEFT_TOP = 5;
   public static final int INTAKE_LEFT_BOTTOM = 6;
   public static final int INTAKE_RIGHT_BOTTOM = 7;
 
   public static final int INTAKE_OPEN = 2;
   public static final int INTAKE_CLOSE = 3;
+
+  //Arm
+  public static final int OUTER_ARM_LEADER = 8;
+  public static final int OUTER_ARM_FOLLOWER = 9;
+
+  public static final int INNER_ARM_LEADER = 10;
+  public static final int INNER_ARM_FOLLOWER = 11;
+
+  public static final int WRIST_MOTOR = 12;
+
+  public static final int ARM_UNLOCKED = 4;
+  public static final int ARM_LOCKED = 5;
 
   // Gearbox
   public static final int DRIVE_GEAR_BOX_OPEN = 0;
@@ -58,9 +71,23 @@ public final class Constants {
   public static final double DRIVE_VOLTAGE_RAMP_RATE = 0;
 
   // PneumaticHub
-  public static final int PNEUMATIC_HUB = 11;
+  public static final int PNEUMATIC_HUB = 13;
+
+  public static final int PDP = 14;
+  public static final int PIGEON_IMU = 15;
 
   // Limit Switches
-  public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 1;
-  public static final int TOP_INTAKE_LIMIT_SWITCH = 0;
+  public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 0;
+
+  //Encoders
+  public static final int THROUGH_BORE_ENCODER_REVS_LIMIT = 8192;
+
+  public static final int OUTER_ARM_PANCAKE_ENCODER_A = 1;
+  public static final int OUTER_ARM_PANCAKE_ENCODER_B = 2;
+
+  public static final int INNER_ARM_PANCAKE_ENCODER_A = 3;
+  public static final int INNER_ARM_PANCAKE_ENCODER_B = 4;
+
+  public static final int WRIST_PANCAKE_ENCODER_A = 5;
+  public static final int WRIST_PANCAKE_ENCODER_B = 6;
 }

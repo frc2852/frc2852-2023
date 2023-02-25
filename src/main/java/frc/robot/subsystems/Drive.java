@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -15,13 +14,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
-import frc.robot.libraries.LazySparkMax;
-import frc.robot.libraries.SparkMaxFactory;
+import frc.robot.libraries.SparkMaxExtended;
 
 public class Drive extends SubsystemBase {
 
   // Hardware
-  private final LazySparkMax mLeftMaster, mRightMaster, mLeftSlave, mRightSlave;
+  private final SparkMaxExtended mLeftLeader, mRightLeader, mLeftFollower, mRightFollower;
   private DifferentialDrive mDifferentialDrive;
   private CommandXboxController driverController;
 
@@ -32,25 +30,25 @@ public class Drive extends SubsystemBase {
 
   private static final double MAX_DRIVE_SPEED = 0.3;
 
-  private void configureSpark(LazySparkMax sparkMax, boolean left, boolean master) {
-    sparkMax.setInverted(!left);
+  private void configureSpark(SparkMaxExtended sparkMax, boolean inverted) {
+    sparkMax.setInverted(inverted);
     sparkMax.enableVoltageCompensation(12.0);
     sparkMax.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
   }
 
   public Drive(CommandXboxController driveController) {
     // start all Talons in open loop mode
-    mLeftMaster = SparkMaxFactory.createDefaultSparkMax(Constants.DRIVE_LEFT_MASTER);
-    configureSpark(mLeftMaster, true, true);
+    mLeftLeader = new SparkMaxExtended(Constants.DRIVE_LEFT_LEADER);
+    configureSpark(mLeftLeader, false);
 
-    mLeftSlave = SparkMaxFactory.createPermanentSlaveSparkMax(Constants.DRIVE_LEFT_SLAVE, mLeftMaster);
-    configureSpark(mLeftSlave, true, false);
+    mLeftFollower = new SparkMaxExtended(Constants.DRIVE_LEFT_FOLLOWER, mLeftLeader);
+    configureSpark(mLeftFollower, false);
 
-    mRightMaster = SparkMaxFactory.createDefaultSparkMax(Constants.DRIVE_RIGHT_MASTER);
-    configureSpark(mRightMaster, false, true);
+    mRightLeader = new SparkMaxExtended(Constants.DRIVE_RIGHT_LEADER);
+    configureSpark(mRightLeader, true);
 
-    mRightSlave = SparkMaxFactory.createPermanentSlaveSparkMax(Constants.DRIVE_RIGHT_SLAVE, mRightMaster);
-    configureSpark(mRightSlave, false, false);
+    mRightFollower = new SparkMaxExtended(Constants.DRIVE_RIGHT_FOLLOWER, mRightLeader);
+    configureSpark(mRightFollower, true);
 
     mShifter = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH, Constants.DRIVE_GEAR_BOX_OPEN,
         Constants.DRIVE_GEAR_BOX_CLOSE);
@@ -60,7 +58,7 @@ public class Drive extends SubsystemBase {
     mIsBrakeMode = true;
     setBrakeMode(false);
 
-    mDifferentialDrive = new DifferentialDrive(mLeftMaster, mRightMaster);
+    mDifferentialDrive = new DifferentialDrive(mLeftLeader, mRightLeader);
 
     this.driverController = driveController;
   }
@@ -101,11 +99,11 @@ public class Drive extends SubsystemBase {
     if (mIsBrakeMode != shouldEnable) {
       mIsBrakeMode = shouldEnable;
       IdleMode mode = shouldEnable ? IdleMode.kBrake : IdleMode.kCoast;
-      mRightMaster.setIdleMode(mode);
-      mRightSlave.setIdleMode(mode);
+      mRightLeader.setIdleMode(mode);
+      mRightFollower.setIdleMode(mode);
 
-      mLeftMaster.setIdleMode(mode);
-      mLeftSlave.setIdleMode(mode);
+      mLeftLeader.setIdleMode(mode);
+      mLeftFollower.setIdleMode(mode);
     }
   }
 
