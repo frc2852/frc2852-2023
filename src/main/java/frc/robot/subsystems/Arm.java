@@ -4,77 +4,49 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMax.IdleMode;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.CounterBase;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.libraries.SparkMaxExtended;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Arm extends SubsystemBase {
 
-  private SparkMaxExtended outerArmLeader = null;
-  private SparkMaxExtended outerArmFollower = null;
-  private SparkMaxExtended innerArmLeader = null;
-  private SparkMaxExtended innerArmFollower = null;
-  private SparkMaxExtended wrist = null;
+  private final double kP = 0.1; // Proportional constant for PID control
+  private final double kI = 0.0; // Integral constant for PID control
+  private final double kD = 0.0; // Derivative constant for PID control
 
-  private DoubleSolenoid mArmSolenoid;
-  private boolean mArmIsLocked = true;
+  private final CANSparkMax wristMotor = new CANSparkMax(55, MotorType.kBrushless);
+  private final Encoder wristEncoder = new Encoder(0, 1, false, CounterBase.EncodingType.k2X);
+
+  private final PIDController wristPIDController = new PIDController(kP, kI, kD);
 
   public Arm() {
-    // initializeOuterArm();
-    // initializeInnerArm();
-    initializeWrist();
-    // setArmSolenoid(Value.kReverse);
-  }
+    // Initialize the arm motor
+    wristMotor.setInverted(true);
 
-  private void configureSpark(SparkMaxExtended sparkMax, boolean invert) {
-    sparkMax.setInverted(invert);
-    sparkMax.enableVoltageCompensation(12.0);
-    // sparkMax.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
-    sparkMax.setIdleMode(IdleMode.kBrake);
-  }
+    wristEncoder.setSamplesToAverage(5);
+    wristEncoder.setDistancePerPulse(4.0 / 8192);
+    wristEncoder.setMinRate(1.0);
+    // wristEncoder.reset();
 
-  public void initializeOuterArm() {
-    outerArmLeader = new SparkMaxExtended(Constants.OUTER_ARM_LEADER);
-    configureSpark(outerArmLeader, true);
-
-    outerArmFollower = new SparkMaxExtended(Constants.OUTER_ARM_FOLLOWER, outerArmLeader);
-    configureSpark(outerArmFollower, true);
-
-    // 3. ... (auto position, if no auto teleop position)
-  }
-
-  public void initializeInnerArm() {
-    innerArmLeader = new SparkMaxExtended(Constants.INNER_ARM_LEADER);
-    configureSpark(innerArmLeader, true);
-
-    innerArmFollower = new SparkMaxExtended(Constants.INNER_ARM_FOLLOWER, innerArmLeader);
-    configureSpark(innerArmFollower, true);
-
-    // 3. ... (auto position, if no auto teleop position)
-  }
-
-  public void initializeWrist() {
-    wrist = new SparkMaxExtended(55);
-    configureSpark(wrist, false);
-
-    // 2. ... (auto position, if no auto teleop position)
+    // Initialize the PID controller for the arm
+    wristPIDController.setTolerance(1.0);
+    wristPIDController.setSetpoint(90);
+    wristPIDController.setIntegratorRange(-0.1, 0.1);
   }
 
   @Override
   public void periodic() {
-  }
+    SmartDashboard.putNumber("Encoder Distance 2", wristEncoder.getDistance());
+    SmartDashboard.putNumber("Encoder Rate 2", wristEncoder.getRate());
 
-  public void OuterArmMovement(int position) {
-    outerArmLeader.set(ControlType.kPosition, position);
-  }
-
-  public void setArmSolenoid(Value solenoidPosition) {
-    mArmIsLocked = (solenoidPosition == DoubleSolenoid.Value.kForward);
-    mArmSolenoid.set(solenoidPosition);
+    double output = wristPIDController.calculate(wristEncoder.getDistance());
+    wristMotor.set(output);
+    SmartDashboard.putNumber("Output", output);
   }
 }
