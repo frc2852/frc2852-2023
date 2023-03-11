@@ -28,7 +28,7 @@ public class Drive extends SubsystemBase {
   private boolean mIsHighGear;
   private boolean mIsBrakeMode;
 
-  private static final double MAX_DRIVE_SPEED = 0.3;
+  private static final double MAX_DRIVE_SPEED = 1.0;
 
   private void configureSpark(SparkMaxExtended sparkMax, boolean inverted) {
     sparkMax.setInverted(inverted);
@@ -78,7 +78,8 @@ public class Drive extends SubsystemBase {
     return run(() -> {
       this.ArcadeDrive(
         MAX_DRIVE_SPEED * driverController.getLeftY() * -1,
-        MAX_DRIVE_SPEED * driverController.getLeftX() * -1);
+        MAX_DRIVE_SPEED * driverController.getLeftX() * -1
+      );
     });
   }
 
@@ -92,6 +93,11 @@ public class Drive extends SubsystemBase {
       }
 
       mIsHighGear = !mIsHighGear;
+
+      this.ArcadeDrive(
+        MAX_DRIVE_SPEED * driverController.getLeftY() * -1,
+        MAX_DRIVE_SPEED * driverController.getLeftX() * -1
+      );
     });
   }
 

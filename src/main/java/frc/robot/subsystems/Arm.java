@@ -5,48 +5,126 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.CounterBase;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.libraries.SparkMaxExtended;
 
 public class Arm extends SubsystemBase {
 
-  private final double kP = 0.1; // Proportional constant for PID control
-  private final double kI = 0.0; // Integral constant for PID control
-  private final double kD = 0.0; // Derivative constant for PID control
+  private SparkMaxExtended outerArmLeader;
+  private SparkMaxExtended outerArmFollower;
+  private SparkMaxPIDController outerArmPIDController;
+  private RelativeEncoder outerArmEncoder;
 
-  private final CANSparkMax wristMotor = new CANSparkMax(55, MotorType.kBrushless);
-  private final Encoder wristEncoder = new Encoder(0, 1, false, CounterBase.EncodingType.k2X);
+  private SparkMaxExtended innerArmLeader;
+  private SparkMaxExtended innerArmFollower;
+  private SparkMaxPIDController innerArmPIDController;
+  private RelativeEncoder innerArmEncoder;
 
-  private final PIDController wristPIDController = new PIDController(kP, kI, kD);
+  private SparkMaxExtended wrist;
+  private SparkMaxPIDController wristPIDController;
+  private RelativeEncoder wristEncoder;
+
+  private DoubleSolenoid mArmSolenoid;
+  private boolean mArmIsLocked = true;
 
   public Arm() {
-    // Initialize the arm motor
-    wristMotor.setInverted(true);
+    initializeOuterArm();
+    initializeInnerArm();
+    initializeWrist();
+    setArmSolenoid(Value.kReverse);
+  }
 
-    wristEncoder.setSamplesToAverage(5);
-    wristEncoder.setDistancePerPulse(4.0 / 8192);
-    wristEncoder.setMinRate(1.0);
-    // wristEncoder.reset();
+  private void configureSpark(SparkMaxExtended sparkMax, boolean invert) {
+    sparkMax.setInverted(invert);
+    sparkMax.enableVoltageCompensation(12.0);
+    sparkMax.setIdleMode(IdleMode.kBrake);
+  }
 
-    // Initialize the PID controller for the arm
-    wristPIDController.setTolerance(1.0);
-    wristPIDController.setSetpoint(90);
-    wristPIDController.setIntegratorRange(-0.1, 0.1);
+  public void initializeOuterArm() {
+    // Initialize motors
+    outerArmLeader = new SparkMaxExtended(Constants.OUTER_ARM_LEADER);
+    configureSpark(outerArmLeader, true);
+
+    outerArmFollower = new SparkMaxExtended(Constants.OUTER_ARM_FOLLOWER, outerArmLeader);
+    configureSpark(outerArmFollower, true);
+
+    // Initialize PID
+    outerArmEncoder = outerArmLeader.getAlternateEncoder(Constants.ALT_ENC_TYPE, Constants.TBE_CPR);
+    outerArmEncoder.setPosition(0);
+
+    outerArmPIDController = outerArmLeader.getPIDController();
+    outerArmPIDController.setFeedbackDevice(outerArmEncoder);
+
+    // PID Defaults
+    outerArmPIDController.setP(0.1);
+    outerArmPIDController.setI(0.0);
+    outerArmPIDController.setD(0.0);
+    outerArmPIDController.setIZone(0.0);
+    outerArmPIDController.setFF(0.0);
+    // outerArmPIDController.setOutputRange(0, 0);
+
+    SmartDashboard.putNumber("Outer arm position", 0);
+  }
+
+  public void initializeInnerArm() {
+    // Initialize motors
+    innerArmLeader = new SparkMaxExtended(Constants.INNER_ARM_LEADER);
+    configureSpark(innerArmLeader, true);
+
+    innerArmFollower = new SparkMaxExtended(Constants.INNER_ARM_FOLLOWER, innerArmLeader);
+    configureSpark(innerArmFollower, true);
+
+    // Initialize PID
+    innerArmEncoder = innerArmLeader.getAlternateEncoder(Constants.ALT_ENC_TYPE, Constants.TBE_CPR);
+    innerArmPIDController = innerArmLeader.getPIDController();
+    innerArmPIDController.setFeedbackDevice(innerArmEncoder);
+
+    // PID Defaults
+    innerArmPIDController.setP(0.1);
+    innerArmPIDController.setI(0.0);
+    innerArmPIDController.setD(0.0);
+    innerArmPIDController.setIZone(0.0);
+    innerArmPIDController.setFF(0.0);
+    // innerArmPIDController.setOutputRange(0, 0);
+  }
+
+  public void initializeWrist() {
+    // Initialize motors
+    wrist = new SparkMaxExtended(Constants.WRIST_MOTOR);
+    configureSpark(wrist, true);
+
+    // Initialize PID
+    wristEncoder = wrist.getAlternateEncoder(Constants.ALT_ENC_TYPE, Constants.TBE_CPR);
+    wristPIDController = wrist.getPIDController();
+    wristPIDController.setFeedbackDevice(wristEncoder);
+
+    // PID Defaults
+    wristPIDController.setP(0.1);
+    wristPIDController.setI(0.0);
+    wristPIDController.setD(0.0);
+    wristPIDController.setIZone(0.0);
+    wristPIDController.setFF(0.0);
+    // wristPIDController.setOutputRange(0, 0);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Encoder Distance 2", wristEncoder.getDistance());
-    SmartDashboard.putNumber("Encoder Rate 2", wristEncoder.getRate());
+    SmartDashboard.putBoolean("Arm locked", mArmIsLocked);
 
-    double output = wristPIDController.calculate(wristEncoder.getDistance());
-    wristMotor.set(output);
-    SmartDashboard.putNumber("Output", output);
+    double oap = SmartDashboard.getNumber("Outer arm position", 0);
+    outerArmPIDController.setReference(oap, CANSparkMax.ControlType.kPosition);
+  }
+
+  public void setArmSolenoid(Value solenoidPosition) {
+    mArmIsLocked = (solenoidPosition == DoubleSolenoid.Value.kForward);
+    mArmSolenoid.set(solenoidPosition);
   }
 }

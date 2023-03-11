@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
+import com.revrobotics.SparkMaxAlternateEncoder;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -48,8 +49,8 @@ public final class Constants {
   public static final int INTAKE_LEFT_BOTTOM = 6;
   public static final int INTAKE_RIGHT_BOTTOM = 7;
 
-  public static final int INTAKE_OPEN = 2;
-  public static final int INTAKE_CLOSE = 3;
+  public static final int INTAKE_OPEN = 7;
+  public static final int INTAKE_CLOSE = 8;
 
   //Arm
   public static final int OUTER_ARM_LEADER = 8;
@@ -60,12 +61,12 @@ public final class Constants {
 
   public static final int WRIST_MOTOR = 12;
 
-  public static final int ARM_UNLOCKED = 4;
-  public static final int ARM_LOCKED = 5;
+  public static final int ARM_UNLOCKED = 3;
+  public static final int ARM_LOCKED = 12;
 
   // Gearbox
-  public static final int DRIVE_GEAR_BOX_OPEN = 0;
-  public static final int DRIVE_GEAR_BOX_CLOSE = 1;
+  public static final int DRIVE_GEAR_BOX_OPEN = 5;
+  public static final int DRIVE_GEAR_BOX_CLOSE = 10;
 
   // Voltage
   public static final double DRIVE_VOLTAGE_RAMP_RATE = 0;
@@ -80,14 +81,6 @@ public final class Constants {
   public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 0;
 
   //Encoders
-  public static final int THROUGH_BORE_ENCODER_REVS_LIMIT = 8192;
-
-  public static final int OUTER_ARM_PANCAKE_ENCODER_A = 1;
-  public static final int OUTER_ARM_PANCAKE_ENCODER_B = 2;
-
-  public static final int INNER_ARM_PANCAKE_ENCODER_A = 3;
-  public static final int INNER_ARM_PANCAKE_ENCODER_B = 4;
-
-  public static final int WRIST_PANCAKE_ENCODER_A = 5;
-  public static final int WRIST_PANCAKE_ENCODER_B = 6;
+  public static final int TBE_CPR = 8192;
+  public static final SparkMaxAlternateEncoder.Type ALT_ENC_TYPE = SparkMaxAlternateEncoder.Type.kQuadrature;
 }
