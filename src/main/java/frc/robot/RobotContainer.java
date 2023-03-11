@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.commands.Drive.DrivetrainCommand;
 import frc.robot.commands.Drive.ToggleGear;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -26,7 +26,7 @@ public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(Constants.DRIVER_CONTROLLER);
   private final CommandXboxController operatorController = new CommandXboxController(Constants.OPERATOR_CONTROLLER);
 
-  private final Drive mDriveSubsystem = new Drive(driverController);
+  private final DriveSubsystem mDriveSubsystem = new DriveSubsystem(driverController);
   private final ToggleGear mToggleGearCommand = new ToggleGear(mDriveSubsystem);
 
   private final PneumaticHub mPneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB);

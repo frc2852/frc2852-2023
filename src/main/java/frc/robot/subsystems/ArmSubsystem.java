@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.libraries.SparkMaxExtended;
 
-public class Arm extends SubsystemBase {
+public class ArmSubsystem extends SubsystemBase {
 
   private SparkMaxExtended outerArmLeader;
   private SparkMaxExtended outerArmFollower;
@@ -34,7 +34,7 @@ public class Arm extends SubsystemBase {
   private DoubleSolenoid mArmSolenoid;
   private boolean mArmIsLocked = true;
 
-  public Arm() {
+  public ArmSubsystem() {
     initializeOuterArm();
     initializeInnerArm();
     initializeWrist();

@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.libraries.SparkMaxExtended;
 
-public class Drive extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase {
 
   // Hardware
   private final SparkMaxExtended mLeftLeader, mRightLeader, mLeftFollower, mRightFollower;
@@ -32,7 +32,7 @@ public class Drive extends SubsystemBase {
     sparkMax.burnFlash();
   }
 
-  public Drive(CommandXboxController driveController) {
+  public DriveSubsystem(CommandXboxController driveController) {
     
     mLeftLeader = new SparkMaxExtended(Constants.DRIVE_LEFT_LEADER);
     configureSpark(mLeftLeader, false);

@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.libraries.SparkMaxExtended;
 
-public class Intake extends SubsystemBase {
+public class IntakeSubsystem extends SubsystemBase {
 
     private final SparkMaxExtended mRightBottom, mLeftBottom;
 
@@ -32,7 +32,7 @@ public class Intake extends SubsystemBase {
         sparkMax.burnFlash();
     }
 
-    public Intake(CommandXboxController driveController) {
+    public IntakeSubsystem(CommandXboxController driveController) {
 
         mIntakeLimitSwitch = new DigitalInput(Constants.BOTTOM_INTAKE_LIMIT_SWITCH);
 

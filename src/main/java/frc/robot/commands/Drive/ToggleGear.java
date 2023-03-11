@@ -5,13 +5,13 @@
 package frc.robot.commands.Drive;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.DriveSubsystem;
 
 public class ToggleGear extends InstantCommand {
 
-  private final Drive mDriveSubsystem;
+  private final DriveSubsystem mDriveSubsystem;
 
-  public ToggleGear(Drive driveSubsystem) {
+  public ToggleGear(DriveSubsystem driveSubsystem) {
     mDriveSubsystem = driveSubsystem;
     addRequirements(driveSubsystem);
   }

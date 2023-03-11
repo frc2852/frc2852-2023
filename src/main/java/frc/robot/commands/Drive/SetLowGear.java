@@ -5,13 +5,13 @@
 package frc.robot.commands.Drive;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.DriveSubsystem;
 
 public class SetLowGear extends InstantCommand {
 
-  private final Drive mDriveSubsystem;
+  private final DriveSubsystem mDriveSubsystem;
 
-  public SetLowGear(Drive driveSubsystem) {
+  public SetLowGear(DriveSubsystem driveSubsystem) {
     mDriveSubsystem = driveSubsystem;
     addRequirements(driveSubsystem);
   }
