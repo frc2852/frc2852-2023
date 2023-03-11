@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.libraries.SparkMaxExtended;
 
@@ -32,7 +31,7 @@ public class DriveSubsystem extends SubsystemBase {
     sparkMax.burnFlash();
   }
 
-  public DriveSubsystem(CommandXboxController driveController) {
+  public DriveSubsystem() {
     
     mLeftLeader = new SparkMaxExtended(Constants.DRIVE_LEFT_LEADER);
     configureSpark(mLeftLeader, false);
@@ -73,11 +72,19 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void SetLowGear() {
+    mLeftLeader.setIdleMode(IdleMode.kBrake);
+    mLeftFollower.setIdleMode(IdleMode.kBrake);
+    mRightLeader.setIdleMode(IdleMode.kBrake);
+    mRightFollower.setIdleMode(IdleMode.kBrake);
     mShifter.set(DoubleSolenoid.Value.kReverse);
     mIsHighGear = false;
   }
 
   public void SetHighGear() {
+    mLeftLeader.setIdleMode(IdleMode.kCoast);
+    mLeftFollower.setIdleMode(IdleMode.kCoast);
+    mRightLeader.setIdleMode(IdleMode.kCoast);
+    mRightFollower.setIdleMode(IdleMode.kCoast);
     mShifter.set(DoubleSolenoid.Value.kForward);
     mIsHighGear = true;
   }

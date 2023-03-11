@@ -11,8 +11,6 @@ public class SparkMaxExtended extends CANSparkMax {
 
     protected double mLastSet = Double.NaN;
     protected ControlType mLastControlType = null;
-
-    // Set if is a follower
     protected CANSparkMax mLeader = null;
 
     public SparkMaxExtended(int deviceId) {

@@ -47,12 +47,12 @@ public final class Constants {
 
   // Intake
   public static final int INTAKE_LEFT_BOTTOM = 6;
-  public static final int INTAKE_RIGHT_BOTTOM = 7;
+  public static final int INTAKE_RIGHT_BOTTOM = 25;
 
-  public static final int INTAKE_OPEN = 7;
-  public static final int INTAKE_CLOSE = 8;
+  public static final int INTAKE_OPEN = 3;
+  public static final int INTAKE_CLOSE = 12;
 
-  //Arm
+  // Arm
   public static final int OUTER_ARM_LEADER = 8;
   public static final int OUTER_ARM_FOLLOWER = 9;
 
@@ -61,8 +61,8 @@ public final class Constants {
 
   public static final int WRIST_MOTOR = 12;
 
-  public static final int ARM_UNLOCKED = 3;
-  public static final int ARM_LOCKED = 12;
+  public static final int ARM_UNLOCKED = 7;
+  public static final int ARM_LOCKED = 8;
 
   // Gearbox
   public static final int DRIVE_GEAR_BOX_OPEN = 5;
@@ -80,7 +80,7 @@ public final class Constants {
   // Limit Switches
   public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 0;
 
-  //Encoders
+  // Encoders
   public static final int TBE_CPR = 8192;
   public static final SparkMaxAlternateEncoder.Type ALT_ENC_TYPE = SparkMaxAlternateEncoder.Type.kQuadrature;
 }

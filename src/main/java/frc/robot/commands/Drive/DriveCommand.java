@@ -9,14 +9,14 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class DrivetrainCommand extends CommandBase {
+public class DriveCommand extends CommandBase {
 
 	/* Creates a new DrivetrainCommand. */
 	private final DriveSubsystem mDriveSubsystem;
 	private final DoubleSupplier mXSpeed;
 	private final DoubleSupplier mZRotation;
 
-	public DrivetrainCommand(DriveSubsystem driveSubsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation) {
+	public DriveCommand(DriveSubsystem driveSubsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation) {
 		mDriveSubsystem = driveSubsystem;
 		mXSpeed = xSpeed;
 		mZRotation = zRotation;

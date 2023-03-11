@@ -1,104 +1,93 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
-import frc.robot.libraries.SparkMaxExtended;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    private final SparkMaxExtended mRightBottom, mLeftBottom;
+    private final CANSparkMax mRightIntake, mLeftIntake;
 
-    private DigitalInput mIntakeLimitSwitch;
     private DoubleSolenoid mIntakeSolenoid;
-    private boolean mIntakeIsInCubeState = false;
+    private double leftMaxCurrent = 0;
+    private double rightMaxCurrent = 0;
 
-    private static final double MAX_INTAKE_SPEED = 0.3;
-    private static final double RAMP_RATE = 10;
+    private static final double MAX_INTAKE_SPEED = 0.20;
+    private static final double INTAKE_STALL_CURRENT = 28;
 
-    private void configureSpark(SparkMaxExtended sparkMax, boolean invert) {
+    private void configureSpark(CANSparkMax sparkMax, boolean invert) {
         sparkMax.setInverted(invert);
-        sparkMax.setIdleMode(IdleMode.kBrake);
-        sparkMax.enableVoltageCompensation(12.0);
-        sparkMax.setOpenLoopRampRate(RAMP_RATE);
+        sparkMax.setIdleMode(IdleMode.kCoast);
+        // sparkMax.enableVoltageCompensation(12.0);
         sparkMax.burnFlash();
     }
 
-    public IntakeSubsystem(CommandXboxController driveController) {
+    public IntakeSubsystem() {
+        mLeftIntake = new CANSparkMax(Constants.INTAKE_LEFT_BOTTOM, MotorType.kBrushless);
+        configureSpark(mLeftIntake, false);
 
-        mIntakeLimitSwitch = new DigitalInput(Constants.BOTTOM_INTAKE_LIMIT_SWITCH);
+        mRightIntake = new CANSparkMax(Constants.INTAKE_RIGHT_BOTTOM, MotorType.kBrushless);
+        configureSpark(mRightIntake, true);
 
-        mLeftBottom = new SparkMaxExtended(Constants.INTAKE_LEFT_BOTTOM);
-        configureSpark(mLeftBottom, false);
-
-        mRightBottom = new SparkMaxExtended(Constants.INTAKE_RIGHT_BOTTOM);
-        configureSpark(mRightBottom, true);
-
-        mIntakeSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH, Constants.INTAKE_OPEN,
+        mIntakeSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH,
+                Constants.INTAKE_CLOSE,
                 Constants.INTAKE_OPEN);
-        setDefaultPosition(DoubleSolenoid.Value.kForward);
+        setIntakePosition(DoubleSolenoid.Value.kForward);
     }
-
-    boolean mIntakeLimitSwitchState = false;
 
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        mIntakeLimitSwitchState = mIntakeLimitSwitch.get();
+        double currentLeftCurrent = mLeftIntake.getOutputCurrent();
+        if (leftMaxCurrent < currentLeftCurrent) {
+            leftMaxCurrent = currentLeftCurrent;
+        }
 
-        SmartDashboard.putNumber("Motor open loop ramp rate", mLeftBottom.getOpenLoopRampRate());
-        SmartDashboard.putNumber("Motor speed", mLeftBottom.get());
-        SmartDashboard.putNumber("Motor applied output", mLeftBottom.getAppliedOutput());
-        SmartDashboard.putNumber("Motor bus voltage", mLeftBottom.getBusVoltage());
-        SmartDashboard.putBoolean("Limit Switch", mIntakeLimitSwitch.get());
+        double currentRightCurrent = mRightIntake.getOutputCurrent();
+        if (rightMaxCurrent < currentRightCurrent) {
+            rightMaxCurrent = currentRightCurrent;
+        }
+
+        SmartDashboard.putNumber("Left Intake current", leftMaxCurrent);
+        SmartDashboard.putNumber("Right Intake current", rightMaxCurrent);
     }
 
-    public CommandBase ingestIntake(boolean mIsCube) {
-        return run(() -> {
-            if (mIsCube) {
-                setDefaultPosition(DoubleSolenoid.Value.kReverse);
-            } else {
-                setDefaultPosition(DoubleSolenoid.Value.kForward);
-            }
-
-            if (!mIntakeLimitSwitchState) {
-                this.stopIntake();
-            } else {
-                setIntakeSpeeds(-MAX_INTAKE_SPEED, RAMP_RATE);
-            }
-        });
+    public boolean IsIntakeStalled() {
+        return (INTAKE_STALL_CURRENT <= mLeftIntake.getOutputCurrent() || INTAKE_STALL_CURRENT <= mRightIntake.getOutputCurrent());
     }
 
-    public CommandBase regurgitateIntake() {
-        return run(() -> {
-            setIntakeSpeeds(MAX_INTAKE_SPEED, RAMP_RATE);
-        });
+    public void ingestIntake(boolean mIsCube) {
+        if (mIsCube) {
+            setIntakePosition(DoubleSolenoid.Value.kReverse);
+            setIntakeSpeeds(-MAX_INTAKE_SPEED, 0.0);
+        } else {
+            setIntakePosition(DoubleSolenoid.Value.kForward);
+            setIntakeSpeeds(-0.4, 0.0);
+        }
     }
 
-    public CommandBase stopIntake() {
-        return run(() -> {
-            setIntakeSpeeds(0, 0);
-        });
+    public void regurgitateIntake() {
+        setIntakeSpeeds(MAX_INTAKE_SPEED, 0.0);
     }
 
-    public void setIntakeSpeeds(double motorSpeed, double rampRate) {
-        mRightBottom.setOpenLoopRampRate(rampRate);
-        mLeftBottom.setOpenLoopRampRate(rampRate);
-
-        mLeftBottom.set(motorSpeed);
-        mRightBottom.set(motorSpeed);
+    public void stopIntake() {
+        setIntakeSpeeds(0, 0);
     }
 
-    public void setDefaultPosition(Value solenoidPosition) {
-        mIntakeIsInCubeState = (solenoidPosition == DoubleSolenoid.Value.kReverse);
+    private void setIntakeSpeeds(double motorSpeed, double rampRate) {
+        mLeftIntake.set(motorSpeed);
+        mRightIntake.set(motorSpeed);
+    }
+
+    private void setIntakePosition(Value solenoidPosition) {
         mIntakeSolenoid.set(solenoidPosition);
     }
 }

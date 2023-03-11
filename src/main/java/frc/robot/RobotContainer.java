@@ -4,9 +4,14 @@
 
 package frc.robot;
 
-import frc.robot.commands.Drive.DrivetrainCommand;
+import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Drive.ToggleGear;
+import frc.robot.commands.Intake.IntakeCubeCommand;
+import frc.robot.commands.Intake.IntakePylonCommand;
+import frc.robot.commands.Intake.OuttakeCommand;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -18,7 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  * the {@link Robot}
  * periodic methods (other than the scheduler calls). Instead, the structure of
  * the robot (including
- * subsystems, commands, and trigger mappings) should be declared here. 
+ * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
 
@@ -26,8 +31,15 @@ public class RobotContainer {
   private final CommandXboxController driverController = new CommandXboxController(Constants.DRIVER_CONTROLLER);
   private final CommandXboxController operatorController = new CommandXboxController(Constants.OPERATOR_CONTROLLER);
 
-  private final DriveSubsystem mDriveSubsystem = new DriveSubsystem(driverController);
+  private final DriveSubsystem mDriveSubsystem = new DriveSubsystem();
+  private final IntakeSubsystem mIntakeSubsystem = new IntakeSubsystem();
+  private final ArmSubsystem mArmSubsystem = new ArmSubsystem();
+
   private final ToggleGear mToggleGearCommand = new ToggleGear(mDriveSubsystem);
+
+  private final IntakeCubeCommand mIntakeCubeCommand = new IntakeCubeCommand(mIntakeSubsystem);
+  private final IntakePylonCommand mIntakePylonCommand = new IntakePylonCommand(mIntakeSubsystem);
+  private final OuttakeCommand mOuttakeCommand = new OuttakeCommand(mIntakeSubsystem);
 
   private final PneumaticHub mPneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB);
 
@@ -43,20 +55,13 @@ public class RobotContainer {
 
   private void ConfigureDriveController() {
     mDriveSubsystem.setDefaultCommand(
-        new DrivetrainCommand(mDriveSubsystem, () -> driverController.getLeftX(), () -> driverController.getLeftY()));
+        new DriveCommand(mDriveSubsystem, () -> driverController.getLeftX(), () -> driverController.getLeftY()));
 
     driverController.b().toggleOnTrue(mToggleGearCommand);
 
-    // driverController.rightBumper().toggleOnTrue(m_intake.ingestIntake(false));
-    // driverController.rightBumper().toggleOnFalse(m_intake.stopIntake());
-
-    // driverController.leftBumper().toggleOnTrue(m_intake.ingestIntake(true));
-    // driverController.leftBumper().toggleOnFalse(m_intake.stopIntake());
-
-    // driverController.rightTrigger().onTrue(m_intake.regurgitateIntake());
-    // driverController.rightTrigger().onFalse(m_intake.stopIntake());
-
-    // driverController.b().toggleOnTrue(m_drive.shiftGear());
+    driverController.rightBumper().whileTrue(mIntakeCubeCommand);
+    driverController.leftBumper().whileTrue(mIntakePylonCommand);
+    driverController.rightTrigger().whileTrue(mOuttakeCommand);
   }
 
   private void ConfigureOperatorController() {
