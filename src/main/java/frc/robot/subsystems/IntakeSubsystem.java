@@ -25,7 +25,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private void configureSpark(CANSparkMax sparkMax, boolean invert) {
         sparkMax.setInverted(invert);
-        sparkMax.setIdleMode(IdleMode.kCoast);
+        sparkMax.setIdleMode(IdleMode.kBrake);
         // sparkMax.enableVoltageCompensation(12.0);
         sparkMax.burnFlash();
     }
