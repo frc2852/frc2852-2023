@@ -4,6 +4,12 @@
 
 package frc.robot;
 
+import frc.robot.commands.Arm.DrivePositionCommand;
+import frc.robot.commands.Arm.ScorePositionLowCommand;
+import frc.robot.commands.Arm.ScorePositionMidCommand;
+import frc.robot.commands.Arm.PickupPositionCommand;
+import frc.robot.commands.Arm.ScorePositionHighCommand;
+import frc.robot.commands.Arm.ZeroPositionCommand;
 import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Drive.ToggleGear;
 import frc.robot.commands.Intake.IntakeCubeCommand;
@@ -35,13 +41,23 @@ public class RobotContainer {
   private final IntakeSubsystem mIntakeSubsystem = new IntakeSubsystem();
   private final ArmSubsystem mArmSubsystem = new ArmSubsystem();
 
-  private final ToggleGear mToggleGearCommand = new ToggleGear(mDriveSubsystem);
+  private final PneumaticHub mPneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB);
 
+  // Driver commands
   private final IntakeCubeCommand mIntakeCubeCommand = new IntakeCubeCommand(mIntakeSubsystem);
   private final IntakePylonCommand mIntakePylonCommand = new IntakePylonCommand(mIntakeSubsystem);
   private final OuttakeCommand mOuttakeCommand = new OuttakeCommand(mIntakeSubsystem);
+  private final DrivePositionCommand mDrivePositionCommand = new DrivePositionCommand(mArmSubsystem);
+  private final ToggleGear mToggleGearCommand = new ToggleGear(mDriveSubsystem);
+  
+  // Operator commands
+  private final ZeroPositionCommand mZeroPositionCommand = new ZeroPositionCommand(mArmSubsystem);
+  private final PickupPositionCommand mPickupPositionCommand = new PickupPositionCommand(mArmSubsystem);
 
-  private final PneumaticHub mPneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB);
+  private final ScorePositionLowCommand mScorePositionLowCommand = new ScorePositionLowCommand(mArmSubsystem);
+  private final ScorePositionMidCommand mScorePositionMidCommand = new ScorePositionMidCommand(mArmSubsystem);
+  private final ScorePositionHighCommand mScorePositionHighCommand = new ScorePositionHighCommand(mArmSubsystem);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -57,7 +73,8 @@ public class RobotContainer {
     mDriveSubsystem.setDefaultCommand(
         new DriveCommand(mDriveSubsystem, () -> driverController.getLeftX(), () -> driverController.getLeftY()));
 
-    driverController.b().toggleOnTrue(mToggleGearCommand);
+    driverController.a().onTrue(mDrivePositionCommand);
+    driverController.b().onTrue(mToggleGearCommand);
 
     driverController.rightBumper().whileTrue(mIntakeCubeCommand);
     driverController.leftBumper().whileTrue(mIntakePylonCommand);
@@ -65,6 +82,11 @@ public class RobotContainer {
   }
 
   private void ConfigureOperatorController() {
+    operatorController.x().onTrue(mPickupPositionCommand);
+    operatorController.a().onTrue(mScorePositionLowCommand);
+    operatorController.b().onTrue(mScorePositionMidCommand);
+    operatorController.y().onTrue(mScorePositionHighCommand);
+    operatorController.back().onTrue(mZeroPositionCommand);
   }
 
   /**

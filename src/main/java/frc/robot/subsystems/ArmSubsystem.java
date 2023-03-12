@@ -4,16 +4,14 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,50 +20,47 @@ import frc.robot.Constants;
 
 public class ArmSubsystem extends SubsystemBase {
 
-  private static final SparkMaxAlternateEncoder.Type kAltEncType = SparkMaxAlternateEncoder.Type.kQuadrature;
-  private static final int kCPR = 8192;
-
-  // #region Outer Arm
-
   private CANSparkMax outerArmLeader;
   private CANSparkMax outerArmFollower;
   private SparkMaxPIDController outerArmPIDController;
   private RelativeEncoder outerArmEncoder;
-
-  public double outerP, outerI, outerD, outerIz, outerFF, outerMax, outerMin;
-
-  // #endregion
-
-  // #region Inner Arm
+  public double outerP, outerI, outerD, outerMax, outerMin;
 
   private CANSparkMax innerArmLeader;
   private CANSparkMax innerArmFollower;
   private SparkMaxPIDController innerArmPIDController;
   private RelativeEncoder innerArmEncoder;
-
   public double innerP, innerI, innerD, innerMax, innerMin;
-
-  // #endregion
-
-  // #region Wrist
 
   private CANSparkMax wrist;
   private SparkMaxPIDController wristPIDController;
   private RelativeEncoder wristEncoder;
-
   public double wristP, wristI, wristD, wristMax, wristMin;
-
-  // #endregion
 
   private DoubleSolenoid mArmSolenoid;
   private boolean mArmIsLocked = true;
 
+  // This should only be enabled for testing and tuning.
+  // Automated positions will not work when enabled
+  private final boolean ARM_DEBUG = true;
+
+  private static double OUTER_ARM_POSITION = 0;
+  private static double INNER_ARM_POSITION = 0;
+  private static double WRIST_POSITION = 0;
+
+  private static double ERROR_RANGE = 1;
+
+  private final double OUTER_ARM_MAX_SPEED = 0.3;
+  private final double INNER_ARM_MAX_SPEED = 0.2;
+  private final double WRIST_MAX_SPEED = 0.2;
+
   public ArmSubsystem() {
-    // InitializeOuterArm();
-    // InitializeInnerArm();
+    InitializeOuterArm();
+    InitializeInnerArm();
     InitializeWrist();
 
-    mArmSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH, Constants.ARM_UNLOCKED, Constants.ARM_LOCKED);
+    mArmSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH, Constants.ARM_UNLOCKED,
+        Constants.ARM_LOCKED);
     setArmSolenoid(Value.kReverse);
   }
 
@@ -76,6 +71,83 @@ public class ArmSubsystem extends SubsystemBase {
     OuterArmPeriodic();
     InnerArmPeriodic();
     WristPeriodic();
+
+    if (ARM_DEBUG) {
+      OuterArmDebugPeriodic();
+      InnerArmDebugPeriodic();
+      WristDebugPeriodic();
+    }
+  }
+
+  public void SetOuterArmPosition(double position, double speed) {
+    if (position >= 30) {
+      position = 30;
+      DriverStation.reportWarning("Outer Arm was set to a position greater then its allowed limit of 30", false);
+    }
+
+    if (position <= -30) {
+      position = -30;
+      DriverStation.reportWarning("Outer Arm was set to a position less then its allowed limit of -30", false);
+    }
+
+    if (speed == 0) {
+      outerArmPIDController.setOutputRange(-OUTER_ARM_MAX_SPEED, OUTER_ARM_MAX_SPEED);
+    } else {
+      outerArmPIDController.setOutputRange(-speed, speed);
+    }
+
+    OUTER_ARM_POSITION = position;
+  }
+
+  public boolean IsOuterArmAtPosition() {
+    return (Math.abs(OUTER_ARM_POSITION - outerArmEncoder.getPosition()) <= ERROR_RANGE);
+  }
+
+  public void SetInnerArmPosition(double position, double speed) {
+    if (position >= 12) {
+      position = 12;
+      DriverStation.reportWarning("Inner Arm was set to a position greater then its allowed limit of 12", false);
+    }
+
+    if (position <= -25) {
+      position = -25;
+      DriverStation.reportWarning("Inner Arm was set to a position less then its allowed limit of -25", false);
+    }
+
+    if (speed == 0) {
+      innerArmPIDController.setOutputRange(-INNER_ARM_MAX_SPEED, INNER_ARM_MAX_SPEED);
+    } else {
+      innerArmPIDController.setOutputRange(-speed, speed);
+    }
+
+    INNER_ARM_POSITION = position;
+  }
+
+  public boolean IsInnerArmAtPosition() {
+    return (Math.abs(INNER_ARM_POSITION - innerArmEncoder.getPosition()) <= ERROR_RANGE);
+  }
+
+  public void SetWristPosition(double position, double speed) {
+    // TODO: Find wrist max/min values
+    // if(position >= 12){
+    // position = 12;
+    // }
+
+    // if(position <= -25){
+    // position = -25;
+    // }
+
+    if (speed == 0) {
+      wristPIDController.setOutputRange(-WRIST_MAX_SPEED, WRIST_MAX_SPEED);
+    } else {
+      wristPIDController.setOutputRange(-speed, speed);
+    }
+
+    WRIST_POSITION = position;
+  }
+
+  public boolean IsWristAtPosition() {
+    return (Math.abs(WRIST_POSITION - wristEncoder.getPosition()) <= ERROR_RANGE);
   }
 
   private void InitializeOuterArm() {
@@ -83,38 +155,32 @@ public class ArmSubsystem extends SubsystemBase {
     outerArmLeader = new CANSparkMax(Constants.OUTER_ARM_LEADER, MotorType.kBrushless);
     outerArmLeader.restoreFactoryDefaults();
     outerArmLeader.setIdleMode(IdleMode.kBrake);
-    // outerArmLeader.enableVoltageCompensation(12.0);
 
     outerArmFollower = new CANSparkMax(Constants.OUTER_ARM_FOLLOWER, MotorType.kBrushless);
     outerArmFollower.restoreFactoryDefaults();
     outerArmFollower.setIdleMode(IdleMode.kBrake);
-    // outerArmFollower.enableVoltageCompensation(12.0);
     outerArmFollower.follow(outerArmLeader);
-
-    // Encoder
-    outerArmEncoder = outerArmLeader.getEncoder(); //outerArmLeader.getAlternateEncoder(kAltEncType, kCPR);
-    // outerArmEncoder.setInverted(true);
-    outerArmEncoder.setPosition(0);
 
     // PID Controller
     outerArmPIDController = outerArmLeader.getPIDController();
-    // outerArmPIDController.setFeedbackDevice(outerArmEncoder);
+
+    // Encoder
+    outerArmEncoder = outerArmLeader.getEncoder();
+    outerArmEncoder.setPosition(0);
 
     // PID defaults
     outerP = 0.1;
-    outerI = 0;
-    outerD = 0;
-    outerIz = 0;
-    outerFF = 0;
-    outerMax = 0.1;
-    outerMin = -0.1;
+    outerI = 0.0000000000001;
+    outerD = 1.0;
+    outerMax = OUTER_ARM_MAX_SPEED;
+    outerMin = -OUTER_ARM_MAX_SPEED;
 
     // set PID coefficients
     outerArmPIDController.setP(outerP);
     outerArmPIDController.setI(outerI);
     outerArmPIDController.setD(outerD);
-    outerArmPIDController.setIZone(outerIz);
-    outerArmPIDController.setFF(outerFF);
+    outerArmPIDController.setIZone(0);
+    outerArmPIDController.setFF(0);
     outerArmPIDController.setOutputRange(outerMin, outerMax);
 
     // Display PID
@@ -123,8 +189,6 @@ public class ArmSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("OuterD", outerD);
     SmartDashboard.putNumber("OuterMax", outerMax);
     SmartDashboard.putNumber("OuterMin", outerMin);
-    SmartDashboard.putNumber("OuterIz", outerMax);
-    SmartDashboard.putNumber("OuterFF", outerMin);
     SmartDashboard.putNumber("OuterRotation", 0);
   }
 
@@ -132,30 +196,27 @@ public class ArmSubsystem extends SubsystemBase {
     // Spark Max
     innerArmLeader = new CANSparkMax(Constants.INNER_ARM_LEADER, MotorType.kBrushless);
     innerArmLeader.restoreFactoryDefaults();
+    innerArmLeader.setInverted(true);
     innerArmLeader.setIdleMode(IdleMode.kBrake);
-    innerArmLeader.enableVoltageCompensation(12.0);
 
     innerArmFollower = new CANSparkMax(Constants.INNER_ARM_FOLLOWER, MotorType.kBrushless);
     innerArmFollower.restoreFactoryDefaults();
+    innerArmFollower.follow(innerArmLeader, true);
     innerArmFollower.setIdleMode(IdleMode.kBrake);
-    innerArmFollower.enableVoltageCompensation(12.0);
-    innerArmFollower.follow(innerArmLeader);
-
-    // Encoder
-    innerArmEncoder = innerArmLeader.getAlternateEncoder(kAltEncType, kCPR);
-    innerArmEncoder.setInverted(false);
-    innerArmEncoder.setPosition(0);
 
     // PID Controller
     innerArmPIDController = innerArmLeader.getPIDController();
-    innerArmPIDController.setFeedbackDevice(innerArmEncoder);
+
+    // Encoder
+    innerArmEncoder = innerArmLeader.getEncoder();
+    innerArmEncoder.setPosition(0);
 
     // PID defaults
-    innerP = 0.1;
-    innerI = 0;
-    innerD = 0;
-    innerMax = 0.1;
-    innerMin = -0.1;
+    innerP = 0.3;
+    innerI = 0.0000000003;
+    innerD = 1.0;
+    innerMax = INNER_ARM_MAX_SPEED;
+    innerMin = -INNER_ARM_MAX_SPEED;
 
     // set PID coefficients
     innerArmPIDController.setP(innerP);
@@ -176,10 +237,10 @@ public class ArmSubsystem extends SubsystemBase {
 
   private void InitializeWrist() {
     // Spark Max
-    wrist = new CANSparkMax(Constants.OUTER_ARM_LEADER, MotorType.kBrushless);
+    wrist = new CANSparkMax(Constants.WRIST_MOTOR, MotorType.kBrushless);
     wrist.restoreFactoryDefaults();
     wrist.setIdleMode(IdleMode.kBrake);
-    wrist.enableVoltageCompensation(12.0);
+    wrist.setInverted(true);
 
     // PID Controller
     wristPIDController = wrist.getPIDController();
@@ -189,11 +250,11 @@ public class ArmSubsystem extends SubsystemBase {
     wristEncoder.setPosition(0);
 
     // PID defaults
-    wristP = 0.1;
-    wristI = 0;
-    wristD = 0;
-    wristMax = 0.1;
-    wristMin = -0.1;
+    wristP = 0.3;
+    wristI = 0.0000003;
+    wristD = 1.0;
+    wristMax = WRIST_MAX_SPEED;
+    wristMin = -WRIST_MAX_SPEED;
 
     // set PID coefficients
     wristPIDController.setP(wristP);
@@ -213,6 +274,33 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   private void OuterArmPeriodic() {
+    outerArmPIDController.setReference(OUTER_ARM_POSITION, CANSparkMax.ControlType.kPosition);
+    SmartDashboard.putNumber("OuterSetPoint", OUTER_ARM_POSITION);
+    SmartDashboard.putNumber("OuterPosition", outerArmEncoder.getPosition());
+    SmartDashboard.putBoolean("Outer Arm Position", IsOuterArmAtPosition());
+  }
+
+  private void InnerArmPeriodic() {
+    innerArmPIDController.setReference(INNER_ARM_POSITION, CANSparkMax.ControlType.kPosition);
+    SmartDashboard.putNumber("InnerSetPoint", INNER_ARM_POSITION);
+    SmartDashboard.putNumber("InnerPosition", innerArmEncoder.getPosition());
+    SmartDashboard.putBoolean("Inner Arm Position", IsInnerArmAtPosition());
+  }
+
+  private void WristPeriodic() {
+    wristPIDController.setReference(WRIST_POSITION, CANSparkMax.ControlType.kPosition);
+    SmartDashboard.putNumber("WristSetPoint", WRIST_POSITION);
+    SmartDashboard.putNumber("WristPosition", wristEncoder.getPosition());
+    SmartDashboard.putBoolean("wrist Arm Position", IsWristAtPosition());
+  }
+
+  /**
+   * Outer Arm periodic is for testing and tuning only and should not be used or
+   * called for automated code.
+   * By default this function is disabled unless the constant 'ARM_DEBUG' is set
+   * to true
+   */
+  private void OuterArmDebugPeriodic() {
     // Read PID coefficients from SmartDashboard
     double p = SmartDashboard.getNumber("OuterP", 0);
     double i = SmartDashboard.getNumber("OuterI", 0);
@@ -242,13 +330,16 @@ public class ArmSubsystem extends SubsystemBase {
       outerMax = max;
     }
 
-    outerArmPIDController.setReference(rotations, CANSparkMax.ControlType.kPosition);
-
-    SmartDashboard.putNumber("OuterSetPoint", rotations);
-    SmartDashboard.putNumber("OuterPosition", outerArmEncoder.getPosition());
+    SetOuterArmPosition(rotations, 0);
   }
 
-  private void InnerArmPeriodic() {
+  /**
+   * Inner Arm periodic is for testing and tuning only and should not be used or
+   * called for automated code.
+   * By default this function is disabled unless the constant 'ARM_DEBUG' is set
+   * to true
+   */
+  private void InnerArmDebugPeriodic() {
     // Read PID coefficients from SmartDashboard
     double p = SmartDashboard.getNumber("InnerP", 0);
     double i = SmartDashboard.getNumber("InnerI", 0);
@@ -278,19 +369,23 @@ public class ArmSubsystem extends SubsystemBase {
       innerMax = max;
     }
 
-    innerArmPIDController.setReference(rotations, CANSparkMax.ControlType.kPosition);
-
-    SmartDashboard.putNumber("InnerSetPoint", rotations);
-    SmartDashboard.putNumber("InnerPosition", innerArmEncoder.getPosition());
+    SetInnerArmPosition(rotations, 0);
   }
 
-  private void WristPeriodic() {
+  /**
+   * Wrist periodic is for testing and tuning only and should not be used or
+   * called for automated code.
+   * By default this function is disabled unless the constant 'ARM_DEBUG' is set
+   * to true
+   */
+  private void WristDebugPeriodic() {
     // Read PID coefficients from SmartDashboard
     double p = SmartDashboard.getNumber("WristP", 0);
     double i = SmartDashboard.getNumber("WristI", 0);
     double d = SmartDashboard.getNumber("WristD", 0);
     double max = SmartDashboard.getNumber("WristMax", 0);
     double min = SmartDashboard.getNumber("WristMin", 0);
+
     double rotations = SmartDashboard.getNumber("WristRotation", 0);
 
     // Update values
@@ -313,10 +408,7 @@ public class ArmSubsystem extends SubsystemBase {
       wristMax = max;
     }
 
-    wristPIDController.setReference(rotations, CANSparkMax.ControlType.kPosition);
-
-    SmartDashboard.putNumber("WristSetPoint", rotations);
-    SmartDashboard.putNumber("WristPosition", wristEncoder.getPosition());
+    SetWristPosition(rotations, 0);
   }
 
   private void setArmSolenoid(Value solenoidPosition) {
