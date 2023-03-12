@@ -79,8 +79,4 @@ public final class Constants {
 
   // Limit Switches
   public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 0;
-
-  // Encoders
-  public static final int TBE_CPR = 8192;
-  public static final SparkMaxAlternateEncoder.Type ALT_ENC_TYPE = SparkMaxAlternateEncoder.Type.kQuadrature;
 }

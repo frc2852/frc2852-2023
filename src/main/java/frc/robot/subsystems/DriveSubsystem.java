@@ -58,8 +58,6 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void ArcadeDrive(double xSpeed, double zRotation) {
-		SmartDashboard.putNumber("xSpeed: ", xSpeed);
-		SmartDashboard.putNumber("zRotation: ", zRotation);
 		mDifferentialDrive.arcadeDrive(xSpeed, zRotation);
 	}
 
