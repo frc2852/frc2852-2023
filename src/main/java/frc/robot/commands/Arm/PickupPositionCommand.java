@@ -5,6 +5,7 @@
 package frc.robot.commands.Arm;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.ArmPosition;
 import frc.robot.commands.Arm.Pivots.InnerArmCommand;
 import frc.robot.commands.Arm.Pivots.OuterArmCommand;
 import frc.robot.commands.Arm.Pivots.WristCommand;
@@ -12,8 +13,10 @@ import frc.robot.subsystems.ArmSubsystem;
 
 public class PickupPositionCommand extends SequentialCommandGroup {
   public PickupPositionCommand(ArmSubsystem armSubsystem) {
+
+    ArmSubsystem.armPosition = ArmPosition.PICK_UP;
     addCommands(new InnerArmCommand(armSubsystem, 8.3, 0.1));
-    addCommands(new OuterArmCommand(armSubsystem, 14.7, 0));
+    addCommands(new OuterArmCommand(armSubsystem, 12.7, 0));
     addCommands(new WristCommand(armSubsystem, 34, 0));
   }
 }

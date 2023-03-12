@@ -79,4 +79,12 @@ public final class Constants {
 
   // Limit Switches
   public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 0;
+
+  public enum ArmPosition{
+    PICK_UP,
+    DRIVE,
+    LOW_GOAL,
+    MID_GOAL,
+    HIGH_GOAL
+  } 
 }

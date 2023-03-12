@@ -11,12 +11,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmPosition;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -42,7 +42,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   // This should only be enabled for testing and tuning.
   // Automated positions will not work when enabled
-  private final boolean ARM_DEBUG = true;
+  private final boolean ARM_DEBUG = false;
 
   private static double OUTER_ARM_POSITION = 0;
   private static double INNER_ARM_POSITION = 0;
@@ -54,6 +54,7 @@ public class ArmSubsystem extends SubsystemBase {
   private final double INNER_ARM_MAX_SPEED = 0.2;
   private final double WRIST_MAX_SPEED = 0.2;
 
+  public static ArmPosition armPosition = ArmPosition.DRIVE; 
   public ArmSubsystem() {
     InitializeOuterArm();
     InitializeInnerArm();

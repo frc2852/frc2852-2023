@@ -10,6 +10,7 @@ import frc.robot.commands.Arm.ScorePositionMidCommand;
 import frc.robot.commands.Arm.PickupPositionCommand;
 import frc.robot.commands.Arm.ScorePositionHighCommand;
 import frc.robot.commands.Arm.ZeroPositionCommand;
+import frc.robot.commands.Autos.LowScoreDriveForwardAuto;
 import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Drive.ToggleGear;
 import frc.robot.commands.Intake.IntakeCubeCommand;
@@ -20,6 +21,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
@@ -58,6 +60,8 @@ public class RobotContainer {
   private final ScorePositionMidCommand mScorePositionMidCommand = new ScorePositionMidCommand(mArmSubsystem);
   private final ScorePositionHighCommand mScorePositionHighCommand = new ScorePositionHighCommand(mArmSubsystem);
 
+  //Autos
+  private final LowScoreDriveForwardAuto mLowScoreDriveForwardAuto = new LowScoreDriveForwardAuto(mArmSubsystem, mIntakeSubsystem);  
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -66,6 +70,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     ConfigureDriveController();
     ConfigureOperatorController();
+    CommandScheduler.getInstance().schedule(mDrivePositionCommand);
     mPneumaticHub.enableCompressorDigital();
   }
 
@@ -95,7 +100,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+    return mLowScoreDriveForwardAuto;
   }
 }
