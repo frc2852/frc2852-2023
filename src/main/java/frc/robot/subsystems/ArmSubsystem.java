@@ -80,16 +80,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void SetOuterArmPosition(double position, double speed) {
-    if (position >= 30) {
-      position = 30;
-      DriverStation.reportWarning("Outer Arm was set to a position greater then its allowed limit of 30", false);
-    }
-
-    if (position <= -30) {
-      position = -30;
-      DriverStation.reportWarning("Outer Arm was set to a position less then its allowed limit of -30", false);
-    }
-
     if (speed == 0) {
       outerArmPIDController.setOutputRange(-OUTER_ARM_MAX_SPEED, OUTER_ARM_MAX_SPEED);
     } else {
@@ -104,16 +94,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void SetInnerArmPosition(double position, double speed) {
-    if (position >= 12) {
-      position = 12;
-      DriverStation.reportWarning("Inner Arm was set to a position greater then its allowed limit of 12", false);
-    }
-
-    if (position <= -25) {
-      position = -25;
-      DriverStation.reportWarning("Inner Arm was set to a position less then its allowed limit of -25", false);
-    }
-
     if (speed == 0) {
       innerArmPIDController.setOutputRange(-INNER_ARM_MAX_SPEED, INNER_ARM_MAX_SPEED);
     } else {
@@ -128,15 +108,6 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void SetWristPosition(double position, double speed) {
-    // TODO: Find wrist max/min values
-    // if(position >= 12){
-    // position = 12;
-    // }
-
-    // if(position <= -25){
-    // position = -25;
-    // }
-
     if (speed == 0) {
       wristPIDController.setOutputRange(-WRIST_MAX_SPEED, WRIST_MAX_SPEED);
     } else {
