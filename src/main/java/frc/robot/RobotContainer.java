@@ -90,7 +90,7 @@ public class RobotContainer {
     operatorController.x().onTrue(mPickupPositionCommand);
     operatorController.a().onTrue(mScorePositionLowCommand);
     operatorController.b().onTrue(mScorePositionMidCommand);
-    operatorController.y().onTrue(mScorePositionHighCommand);
+    //operatorController.y().onTrue(mScorePositionHighCommand);
     operatorController.back().onTrue(mZeroPositionCommand);
   }
 
