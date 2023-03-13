@@ -39,14 +39,14 @@ public class DriveSubsystem extends SubsystemBase {
 
     mLeftFollower = new CANSparkMax(Constants.DRIVE_LEFT_FOLLOWER, MotorType.kBrushless);
     configureSpark(mLeftFollower, false);
-    mLeftFollower.follow( mLeftLeader);
+    mLeftFollower.follow(mLeftLeader);
 
     mRightLeader = new CANSparkMax(Constants.DRIVE_RIGHT_LEADER, MotorType.kBrushless);
     configureSpark(mRightLeader, false);
 
     mRightFollower = new CANSparkMax(Constants.DRIVE_RIGHT_FOLLOWER, MotorType.kBrushless);
     configureSpark(mRightFollower, false);
-    mRightFollower.follow(mLeftLeader);
+    mRightFollower.follow(mRightLeader);
     
     mShifter = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH, Constants.DRIVE_GEAR_BOX_OPEN, Constants.DRIVE_GEAR_BOX_CLOSE);
 
