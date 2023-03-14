@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.commands.Arm.DrivePositionCommand;
+import frc.robot.commands.Arm.HighPickupPositionCommand;
 import frc.robot.commands.Arm.ScorePositionLowCommand;
 import frc.robot.commands.Arm.ScorePositionMidCommand;
 import frc.robot.commands.Arm.PickupPositionCommand;
@@ -55,10 +56,11 @@ public class RobotContainer {
   // Operator commands
   private final ZeroPositionCommand mZeroPositionCommand = new ZeroPositionCommand(mArmSubsystem);
   private final PickupPositionCommand mPickupPositionCommand = new PickupPositionCommand(mArmSubsystem);
+  private final HighPickupPositionCommand mHighPickupPositionCommand = new HighPickupPositionCommand(mArmSubsystem);
 
   private final ScorePositionLowCommand mScorePositionLowCommand = new ScorePositionLowCommand(mArmSubsystem);
   private final ScorePositionMidCommand mScorePositionMidCommand = new ScorePositionMidCommand(mArmSubsystem);
-  private final ScorePositionHighCommand mScorePositionHighCommand = new ScorePositionHighCommand(mArmSubsystem);
+  //private final ScorePositionHighCommand mScorePositionHighCommand = new ScorePositionHighCommand(mArmSubsystem);
 
   //Autos
   private final LowScoreDriveForwardAuto mLowScoreDriveForwardAuto = new LowScoreDriveForwardAuto(mArmSubsystem, mIntakeSubsystem);  
@@ -88,6 +90,7 @@ public class RobotContainer {
 
   private void ConfigureOperatorController() {
     operatorController.x().onTrue(mPickupPositionCommand);
+    operatorController.y().onTrue(mHighPickupPositionCommand);
     operatorController.a().onTrue(mScorePositionLowCommand);
     operatorController.b().onTrue(mScorePositionMidCommand);
     //operatorController.y().onTrue(mScorePositionHighCommand);

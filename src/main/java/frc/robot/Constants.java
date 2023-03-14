@@ -82,6 +82,7 @@ public final class Constants {
 
   public enum ArmPosition{
     PICK_UP,
+    HIGH_PICK_UP,
     DRIVE,
     LOW_GOAL,
     MID_GOAL,

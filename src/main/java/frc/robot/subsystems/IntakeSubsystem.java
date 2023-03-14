@@ -19,7 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private double leftMaxCurrent = 0;
     private double rightMaxCurrent = 0;
 
-    private static final double MAX_INTAKE_SPEED = 0.20;
+    private static final double MAX_INTAKE_SPEED = 0.50;
     private static final double INTAKE_STALL_CURRENT = 28;
 
     private void configureSpark(CANSparkMax sparkMax, boolean invert) {
@@ -69,7 +69,7 @@ public class IntakeSubsystem extends SubsystemBase {
             setIntakeSpeeds(-MAX_INTAKE_SPEED, 0.0);
         } else {
             setIntakePosition(DoubleSolenoid.Value.kForward);
-            setIntakeSpeeds(-0.4, 0.0);
+            setIntakeSpeeds(-MAX_INTAKE_SPEED, 0.0);
         }
     }
 

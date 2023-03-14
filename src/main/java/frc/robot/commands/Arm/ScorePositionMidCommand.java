@@ -14,7 +14,7 @@ import frc.robot.subsystems.ArmSubsystem;
 public class ScorePositionMidCommand extends SequentialCommandGroup {
   /** Creates a new LowScorePositionCommand. */
   public ScorePositionMidCommand(ArmSubsystem armSubsystem) {
-    if(ArmSubsystem.armPosition == ArmPosition.PICK_UP){
+    if(ArmSubsystem.armPosition == ArmPosition.PICK_UP || ArmSubsystem.armPosition == ArmPosition.HIGH_PICK_UP){
       addCommands(new DrivePositionCommand(armSubsystem));
     }
     
