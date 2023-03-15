@@ -11,16 +11,16 @@ import frc.robot.commands.Arm.Pivots.OuterArmCommand;
 import frc.robot.commands.Arm.Pivots.WristCommand;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class ScorePositionMidCommand extends SequentialCommandGroup {
+public class ScorePositionHighCubeCommand extends SequentialCommandGroup {
   /** Creates a new LowScorePositionCommand. */
-  public ScorePositionMidCommand(ArmSubsystem armSubsystem) {
+  public ScorePositionHighCubeCommand(ArmSubsystem armSubsystem) {
     if(ArmSubsystem.armPosition == ArmPosition.PICK_UP || ArmSubsystem.armPosition == ArmPosition.HIGH_PICK_UP){
       addCommands(new DrivePositionCommand(armSubsystem));
     }
     
-    ArmSubsystem.armPosition = ArmPosition.MID_GOAL;
-    addCommands(new WristCommand(armSubsystem, 12, 0));
+    ArmSubsystem.armPosition = ArmPosition.HIGH_GOAL;
+    addCommands(new WristCommand(armSubsystem, -20, 0));
     addCommands(new OuterArmCommand(armSubsystem, -5, 0));
-    addCommands(new InnerArmCommand(armSubsystem, -19, 0.3));
+    addCommands(new InnerArmCommand(armSubsystem, -19, 0.1));
   }
 }

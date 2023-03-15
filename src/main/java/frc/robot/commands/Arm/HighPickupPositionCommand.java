@@ -15,9 +15,9 @@ import frc.robot.subsystems.ArmSubsystem;
   public HighPickupPositionCommand(ArmSubsystem armSubsystem) {
 
     ArmSubsystem.armPosition = ArmPosition.HIGH_PICK_UP;
-    addCommands(new InnerArmCommand(armSubsystem, 0.0, 0.1));
-    addCommands(new OuterArmCommand(armSubsystem, 0.0, 0));
-    addCommands(new WristCommand(armSubsystem, 0.0, 0));
+    addCommands(new WristCommand(armSubsystem, 1, 0));
+    addCommands(new InnerArmCommand(armSubsystem, 13.8, 0.35));
+    addCommands(new OuterArmCommand(armSubsystem, -14, 0));
+    addCommands(new WristCommand(armSubsystem, -22, 0));
   }
 }
-

@@ -20,12 +20,13 @@ public class IntakeSubsystem extends SubsystemBase {
     private double rightMaxCurrent = 0;
 
     private static final double MAX_INTAKE_SPEED = 0.50;
+    private static final double MAX_OUTTAKE_SPEED = 1.0;
     private static final double INTAKE_STALL_CURRENT = 28;
 
     private void configureSpark(CANSparkMax sparkMax, boolean invert) {
         sparkMax.setInverted(invert);
         sparkMax.setIdleMode(IdleMode.kBrake);
-        // sparkMax.enableVoltageCompensation(12.0);
+        sparkMax.enableVoltageCompensation(12.0);
         sparkMax.burnFlash();
     }
 
@@ -60,28 +61,29 @@ public class IntakeSubsystem extends SubsystemBase {
     }
 
     public boolean IsIntakeStalled() {
-        return (INTAKE_STALL_CURRENT <= mLeftIntake.getOutputCurrent() || INTAKE_STALL_CURRENT <= mRightIntake.getOutputCurrent());
+        return (INTAKE_STALL_CURRENT <= mLeftIntake.getOutputCurrent()
+                || INTAKE_STALL_CURRENT <= mRightIntake.getOutputCurrent());
     }
 
     public void ingestIntake(boolean mIsCube) {
         if (mIsCube) {
             setIntakePosition(DoubleSolenoid.Value.kReverse);
-            setIntakeSpeeds(-MAX_INTAKE_SPEED, 0.0);
+            setIntakeSpeeds(-MAX_INTAKE_SPEED);
         } else {
             setIntakePosition(DoubleSolenoid.Value.kForward);
-            setIntakeSpeeds(-MAX_INTAKE_SPEED, 0.0);
+            setIntakeSpeeds(-MAX_INTAKE_SPEED);
         }
     }
 
     public void regurgitateIntake() {
-        setIntakeSpeeds(MAX_INTAKE_SPEED, 0.0);
+        setIntakeSpeeds(MAX_OUTTAKE_SPEED);
     }
 
     public void stopIntake() {
-        setIntakeSpeeds(0, 0);
+        setIntakeSpeeds(0);
     }
 
-    private void setIntakeSpeeds(double motorSpeed, double rampRate) {
+    private void setIntakeSpeeds(double motorSpeed) {
         mLeftIntake.set(motorSpeed);
         mRightIntake.set(motorSpeed);
     }

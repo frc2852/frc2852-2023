@@ -7,22 +7,27 @@ package frc.robot;
 import frc.robot.commands.Arm.DrivePositionCommand;
 import frc.robot.commands.Arm.HighPickupPositionCommand;
 import frc.robot.commands.Arm.ScorePositionLowCommand;
-import frc.robot.commands.Arm.ScorePositionMidCommand;
+import frc.robot.commands.Arm.ScorePositionMidCubeCommand;
+import frc.robot.commands.Arm.ScorePositionMidPylonCommand;
 import frc.robot.commands.Arm.PickupPositionCommand;
-import frc.robot.commands.Arm.ScorePositionHighCommand;
+import frc.robot.commands.Arm.ScorePositionHighCubeCommand;
 import frc.robot.commands.Arm.ZeroPositionCommand;
-import frc.robot.commands.Autos.LowScoreDriveForwardAuto;
+import frc.robot.commands.Autos.HighScoreCubeDriveForwardAuto;
+import frc.robot.commands.Autos.MidScoreCubeDriveForwardAuto;
+import frc.robot.commands.Autos.MidScorePylonDriveForwardAuto;
 import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Drive.ToggleGear;
 import frc.robot.commands.Intake.IntakeCubeCommand;
 import frc.robot.commands.Intake.IntakePylonCommand;
 import frc.robot.commands.Intake.OuttakeCommand;
+import frc.robot.commands.Intake.TimedOuttakeCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
@@ -59,24 +64,28 @@ public class RobotContainer {
   private final HighPickupPositionCommand mHighPickupPositionCommand = new HighPickupPositionCommand(mArmSubsystem);
 
   private final ScorePositionLowCommand mScorePositionLowCommand = new ScorePositionLowCommand(mArmSubsystem);
-  private final ScorePositionMidCommand mScorePositionMidCommand = new ScorePositionMidCommand(mArmSubsystem);
-  //private final ScorePositionHighCommand mScorePositionHighCommand = new ScorePositionHighCommand(mArmSubsystem);
+  private final ScorePositionMidPylonCommand mScorePositionMidPylonCommand = new ScorePositionMidPylonCommand(mArmSubsystem);
+  private final ScorePositionMidCubeCommand mScorePositionMidCubeCommand = new ScorePositionMidCubeCommand(mArmSubsystem);
+  private final ScorePositionHighCubeCommand mScorePositionHighCubeCommand = new ScorePositionHighCubeCommand(mArmSubsystem);
 
   //Autos
-  private final LowScoreDriveForwardAuto mLowScoreDriveForwardAuto = new LowScoreDriveForwardAuto(mArmSubsystem, mIntakeSubsystem);  
-
+  private final SendableChooser<Command> autoSelection = new SendableChooser<>();
+  private final HighScoreCubeDriveForwardAuto mHighScoreCubeDriveForwardAuto = new HighScoreCubeDriveForwardAuto(mArmSubsystem, mIntakeSubsystem);
+  private final MidScoreCubeDriveForwardAuto mMidScoreCubeDriveForwardAuto = new MidScoreCubeDriveForwardAuto(mArmSubsystem, mIntakeSubsystem);  
+  private final MidScorePylonDriveForwardAuto mMidScorePylonDriveForwardAuto = new MidScorePylonDriveForwardAuto(mArmSubsystem, mIntakeSubsystem);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the trigger bindings
-    ConfigureDriveController();
-    ConfigureOperatorController();
-    CommandScheduler.getInstance().schedule(mDrivePositionCommand);
+    configureDriveController();
+    configureOperatorController();
+    configureAutoSelection();
+
     mPneumaticHub.enableCompressorDigital();
   }
 
-  private void ConfigureDriveController() {
+  private void configureDriveController() {
     mDriveSubsystem.setDefaultCommand(
         new DriveCommand(mDriveSubsystem, () -> driverController.getLeftX(), () -> driverController.getLeftY()));
 
@@ -88,13 +97,24 @@ public class RobotContainer {
     driverController.rightTrigger().whileTrue(mOuttakeCommand);
   }
 
-  private void ConfigureOperatorController() {
-    operatorController.x().onTrue(mPickupPositionCommand);
-    operatorController.y().onTrue(mHighPickupPositionCommand);
+  private void configureOperatorController() {
     operatorController.a().onTrue(mScorePositionLowCommand);
-    operatorController.b().onTrue(mScorePositionMidCommand);
-    //operatorController.y().onTrue(mScorePositionHighCommand);
+    operatorController.b().onTrue(mScorePositionMidPylonCommand); //Mid score position pylon
+    operatorController.x().onTrue(mScorePositionMidCubeCommand); //Mid score position cube
+    operatorController.y().onTrue(mScorePositionHighCubeCommand); //High score position cube
+    operatorController.leftBumper().onTrue(mHighPickupPositionCommand); //Pick up high position
+    operatorController.rightBumper().onTrue(mPickupPositionCommand); //Pick up low position
+
+    //Secret
     operatorController.back().onTrue(mZeroPositionCommand);
+  }
+
+  private void configureAutoSelection(){
+    autoSelection.setDefaultOption("High score cube - Drive forward", mHighScoreCubeDriveForwardAuto);
+    autoSelection.addOption("Mid score cube - Drive forward", mMidScoreCubeDriveForwardAuto);
+    autoSelection.addOption("Mid score pylon - Drive forward", mMidScorePylonDriveForwardAuto);
+    
+    SmartDashboard.putData("Auto Mode", autoSelection);
   }
 
   /**
@@ -103,6 +123,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return mLowScoreDriveForwardAuto;
+    return autoSelection.getSelected();
   }
 }

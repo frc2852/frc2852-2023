@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
-import com.revrobotics.SparkMaxAlternateEncoder;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
  * numerical or boolean

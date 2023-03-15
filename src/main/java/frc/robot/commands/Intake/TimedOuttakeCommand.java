@@ -4,27 +4,33 @@
 
 package frc.robot.commands.Intake;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class OuttakeCommand extends CommandBase {
+public class TimedOuttakeCommand extends CommandBase {
 
   private final IntakeSubsystem mIntakeSubsystem;
+  private final double mRunTime;
+  private final Timer mTimer = new Timer();
 
-  public OuttakeCommand(IntakeSubsystem intakeSubsystem) {
+  public TimedOuttakeCommand(IntakeSubsystem intakeSubsystem, double runTime) {
     mIntakeSubsystem = intakeSubsystem;
+    mRunTime = runTime;
     addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    mTimer.reset();
+    mTimer.start();
+    mIntakeSubsystem.regurgitateIntake();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mIntakeSubsystem.regurgitateIntake();
   }
 
   // Called once the command ends or is interrupted.
@@ -36,6 +42,6 @@ public class OuttakeCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return mTimer.hasElapsed(mRunTime);
   }
 }

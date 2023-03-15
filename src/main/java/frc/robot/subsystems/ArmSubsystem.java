@@ -184,8 +184,8 @@ public class ArmSubsystem extends SubsystemBase {
     innerArmEncoder.setPosition(0);
 
     // PID defaults
-    innerP = 0.3;
-    innerI = 0.0000000003;
+    innerP = 0.1;
+    innerI = 0.0000000001;
     innerD = 1.0;
     innerMax = INNER_ARM_MAX_SPEED;
     innerMin = -INNER_ARM_MAX_SPEED;
