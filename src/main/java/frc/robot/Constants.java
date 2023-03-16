@@ -25,16 +25,6 @@ public final class Constants {
   public static final int DRIVER_CONTROLLER = 0;
   public static final int OPERATOR_CONTROLLER = 1;
 
-  // Joystick Mapping
-  public static final int LEFT_STICK_VERT = 1;
-  public static final int LEFT_STICK_HORZ = 0;
-  public static final int RIGHT_STICK_VERT = 5;
-  public static final int RIGHT_STICK_HORZ = 4;
-
-  // Trigger Mapping
-  public static int LEFT_TRIGGER = 2;
-  public static int RIGHT_TRIGGER = 3;
-
   // Drive
   public static final int DRIVE_LEFT_LEADER = 1;
   public static final int DRIVE_LEFT_FOLLOWER = 2;
@@ -43,7 +33,6 @@ public final class Constants {
   public static final int DRIVE_RIGHT_FOLLOWER = 4;
 
   // Intake
-
   public static final int INTAKE_LEFT_BOTTOM = 6;
   public static final int INTAKE_RIGHT_BOTTOM = 25;
 
@@ -72,12 +61,7 @@ public final class Constants {
   // PneumaticHub
   public static final int PNEUMATIC_HUB = 13;
 
-  public static final int PDP = 14;
-  public static final int PIGEON_IMU = 15;
-
-  // Limit Switches
-  public static final int BOTTOM_INTAKE_LIMIT_SWITCH = 0;
-
+  public static final int ONE_FOOT = 12;
   public enum ArmPosition{
     PICK_UP,
     HIGH_PICK_UP,

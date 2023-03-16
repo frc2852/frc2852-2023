@@ -32,7 +32,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private boolean mIsHighGear;
 
-  //Move to constants
+  // Move to constants
   private final double WHEEL_DIAMETER_INCHES = 6.0;
   private final double GEAR_RATIO = 15.0;
   private final double ENCODER_CONVERSION_FACTOR = (1 / (WHEEL_DIAMETER_INCHES * Math.PI)) * GEAR_RATIO;
@@ -95,13 +95,19 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("High Gear", mIsHighGear);
 
-    if (DriverStation.isAutonomous()) { //TODO: I'm not sure how much resources this is to check all the time, if it causes issues, just store it locally once false and use for both isAuto/isTeleop
+    if (DriverStation.isAutonomous()) {
       // Dumb auto drive
       if (mDistanceToTravelInches > 0) {
         double distancePosition = mDistanceToTravelInches * 0.27; // 3.24
         double distance = distancePosition - mLeftEncoder.getPosition();
         if (distance > 0.5) {
-          mDifferentialDrive.tankDrive(0.39, -0.4);
+
+          //Back
+          if(mDistanceToTravelInches > 0){
+            mDifferentialDrive.tankDrive(0.39, -0.4);
+          } else if(mDistanceToTravelInches < 0) {
+            mDifferentialDrive.tankDrive(-0.39, 0.4);
+          }
         } else {
           mDifferentialDrive.tankDrive(0, 0);
           mDistanceToTravelInches = 0;
