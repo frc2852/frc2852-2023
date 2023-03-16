@@ -24,10 +24,8 @@ public class DriveSubsystem extends SubsystemBase {
   // Hardware
   private final CANSparkMax mLeftLeader, mRightLeader, mLeftFollower, mRightFollower;
   private RelativeEncoder mLeftEncoder;
-  private SparkMaxPIDController mLeftPIDController;
 
   private RelativeEncoder mRightEncoder;
-  private SparkMaxPIDController mRightPIDController;
 
   private DifferentialDrive mDifferentialDrive = null;
   private final DoubleSolenoid mShifter;
@@ -40,59 +38,50 @@ public class DriveSubsystem extends SubsystemBase {
   private final double ENCODER_CONVERSION_FACTOR = (1 / (WHEEL_DIAMETER_INCHES * Math.PI)) * GEAR_RATIO;
   private double mDistanceToTravelInches = 0;
 
-  private void configureSpark(CANSparkMax sparkMax, boolean inverted) {
-    sparkMax.setInverted(inverted);
-    sparkMax.enableVoltageCompensation(12.0);
-    sparkMax.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
-    sparkMax.setIdleMode(IdleMode.kBrake);
-    sparkMax.burnFlash();
-  }
-
   public DriveSubsystem() {
-
     mLeftLeader = new CANSparkMax(Constants.DRIVE_LEFT_LEADER, MotorType.kBrushless);
-    configureSpark(mLeftLeader, false);
-
-    mLeftPIDController = mLeftLeader.getPIDController();
-    mLeftPIDController.setP(0.1);
-    mLeftPIDController.setI(0);
-    mLeftPIDController.setD(0);
-    mLeftPIDController.setIZone(0);
-    mLeftPIDController.setFF(0);
-    mLeftPIDController.setOutputRange(-0.2, 0.2);
+    mLeftLeader.setInverted(false);
+    mLeftLeader.enableVoltageCompensation(12.0);
+    mLeftLeader.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
+    mLeftLeader.setIdleMode(IdleMode.kBrake);
+    mLeftLeader.burnFlash();
 
     mLeftEncoder = mLeftLeader.getEncoder();
     mLeftEncoder.setPosition(0);
     mLeftEncoder.setPositionConversionFactor(ENCODER_CONVERSION_FACTOR);
 
     mLeftFollower = new CANSparkMax(Constants.DRIVE_LEFT_FOLLOWER, MotorType.kBrushless);
-    configureSpark(mLeftFollower, false);
+    mLeftFollower.setInverted(false);
+    mLeftFollower.enableVoltageCompensation(12.0);
+    mLeftFollower.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
+    mLeftFollower.setIdleMode(IdleMode.kBrake);
     mLeftFollower.follow(mLeftLeader);
     mLeftFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
     mLeftFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
     mLeftFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+    mLeftFollower.burnFlash();
 
     mRightLeader = new CANSparkMax(Constants.DRIVE_RIGHT_LEADER, MotorType.kBrushless);
-    configureSpark(mRightLeader, false);
-
-    mRightPIDController = mRightLeader.getPIDController();
-    mRightPIDController.setP(0.1);
-    mRightPIDController.setI(0);
-    mRightPIDController.setD(0);
-    mRightPIDController.setIZone(0);
-    mRightPIDController.setFF(0);
-    mRightPIDController.setOutputRange(-0.2, 0.2);
+    mRightLeader.setInverted(false);
+    mRightLeader.enableVoltageCompensation(12.0);
+    mRightLeader.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
+    mRightLeader.setIdleMode(IdleMode.kBrake);
+    mRightLeader.burnFlash();
 
     mRightEncoder = mRightLeader.getEncoder();
     mRightEncoder.setPosition(0);
     mRightEncoder.setPositionConversionFactor(ENCODER_CONVERSION_FACTOR);
 
     mRightFollower = new CANSparkMax(Constants.DRIVE_RIGHT_FOLLOWER, MotorType.kBrushless);
-    configureSpark(mRightFollower, false);
+    mRightFollower.setInverted(false);
+    mRightFollower.enableVoltageCompensation(12.0);
+    mRightFollower.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
+    mRightFollower.setIdleMode(IdleMode.kBrake);
     mRightFollower.follow(mRightLeader);
     mRightFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
     mRightFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
     mRightFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+    mRightFollower.burnFlash();
 
     mShifter = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH, Constants.DRIVE_GEAR_BOX_OPEN,
         Constants.DRIVE_GEAR_BOX_CLOSE);
@@ -106,7 +95,7 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("High Gear", mIsHighGear);
 
-    if (DriverStation.isAutonomous()) {
+    if (DriverStation.isAutonomous()) { //TODO: I'm not sure how much resources this is to check all the time, if it causes issues, just store it locally once false and use for both isAuto/isTeleop
       // Dumb auto drive
       if (mDistanceToTravelInches > 0) {
         double distancePosition = mDistanceToTravelInches * 0.27; // 3.24
