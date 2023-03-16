@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private boolean mIsHighGear;
 
+  //Move to constants
   private final double WHEEL_DIAMETER_INCHES = 6.0;
   private final double GEAR_RATIO = 15.0;
   private final double ENCODER_CONVERSION_FACTOR = (1 / (WHEEL_DIAMETER_INCHES * Math.PI)) * GEAR_RATIO;
@@ -104,15 +106,19 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     SmartDashboard.putBoolean("High Gear", mIsHighGear);
 
-    //Bad auto
-    if (mDistanceToTravelInches > 0) {
-      double distancePosition = mDistanceToTravelInches * 0.27; // 3.24
-      double distance = distancePosition - mLeftEncoder.getPosition();
-      if (distance > 0.5) {
-        mDifferentialDrive.tankDrive(0.39, -0.4);
+    if (DriverStation.isAutonomous()) {
+      // Dumb auto drive
+      if (mDistanceToTravelInches > 0) {
+        double distancePosition = mDistanceToTravelInches * 0.27; // 3.24
+        double distance = distancePosition - mLeftEncoder.getPosition();
+        if (distance > 0.5) {
+          mDifferentialDrive.tankDrive(0.39, -0.4);
+        } else {
+          mDifferentialDrive.tankDrive(0, 0);
+          mDistanceToTravelInches = 0;
+        }
       } else {
         mDifferentialDrive.tankDrive(0, 0);
-        mDistanceToTravelInches = 0;
       }
     }
   }
@@ -122,7 +128,7 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void ArcadeDrive(double xSpeed, double zRotation) {
-    if (mDistanceToTravelInches == 0) {
+    if (DriverStation.isTeleop()) {
       mDifferentialDrive.arcadeDrive(xSpeed, zRotation);
     }
   }
