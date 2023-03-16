@@ -23,8 +23,8 @@ public class ScorePositionMidPylonCommand extends SequentialCommandGroup {
     }
 
     ArmSubsystem.armPosition = ArmPosition.MID_GOAL;
-    addCommands(new OuterArmCommand(armSubsystem, -5, 0));
-    addCommands(new InnerArmCommand(armSubsystem, -20, 0.3));
-    addCommands(new WristCommand(armSubsystem, 12, 0));
+    addCommands(new OuterArmCommand(armSubsystem, -5.5, 0));
+    addCommands(new InnerArmCommand(armSubsystem, -20.5, 0.3));
+    addCommands(new WristCommand(armSubsystem, 14.5, 0));
   }
 }

@@ -43,6 +43,7 @@ public final class Constants {
   public static final int DRIVE_RIGHT_FOLLOWER = 4;
 
   // Intake
+
   public static final int INTAKE_LEFT_BOTTOM = 6;
   public static final int INTAKE_RIGHT_BOTTOM = 25;
 
