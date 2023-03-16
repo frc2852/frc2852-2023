@@ -9,6 +9,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -65,6 +66,9 @@ public class DriveSubsystem extends SubsystemBase {
     mLeftFollower = new CANSparkMax(Constants.DRIVE_LEFT_FOLLOWER, MotorType.kBrushless);
     configureSpark(mLeftFollower, false);
     mLeftFollower.follow(mLeftLeader);
+    mLeftFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+    mLeftFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+    mLeftFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
 
     mRightLeader = new CANSparkMax(Constants.DRIVE_RIGHT_LEADER, MotorType.kBrushless);
     configureSpark(mRightLeader, false);
@@ -84,6 +88,9 @@ public class DriveSubsystem extends SubsystemBase {
     mRightFollower = new CANSparkMax(Constants.DRIVE_RIGHT_FOLLOWER, MotorType.kBrushless);
     configureSpark(mRightFollower, false);
     mRightFollower.follow(mRightLeader);
+    mRightFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+    mRightFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+    mRightFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
 
     mShifter = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH, Constants.DRIVE_GEAR_BOX_OPEN,
         Constants.DRIVE_GEAR_BOX_CLOSE);
@@ -91,8 +98,6 @@ public class DriveSubsystem extends SubsystemBase {
     SetLowGear();
 
     mDifferentialDrive = new DifferentialDrive(mLeftLeader, mRightLeader);
-
-    mDistanceToTravelInches = 12 * 15;
   }
 
   @Override

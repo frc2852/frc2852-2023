@@ -6,13 +6,16 @@ package frc.robot.commands.Autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Arm.ScorePositionHighCubeCommand;
+import frc.robot.commands.Drive.DriveForwardDistanceCommand;
 import frc.robot.commands.Intake.TimedOuttakeCommand;
 import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 public class HighScoreCubeDriveForwardAuto extends SequentialCommandGroup {
-  public HighScoreCubeDriveForwardAuto(ArmSubsystem armSubsystem, IntakeSubsystem intakeSubsystem) {
+  public HighScoreCubeDriveForwardAuto(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem, IntakeSubsystem intakeSubsystem) {
     addCommands(new ScorePositionHighCubeCommand(armSubsystem));
     addCommands(new TimedOuttakeCommand(intakeSubsystem, 2));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, 12 * 15));
   }
 }

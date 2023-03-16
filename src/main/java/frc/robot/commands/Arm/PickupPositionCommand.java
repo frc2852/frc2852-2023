@@ -14,9 +14,16 @@ import frc.robot.subsystems.ArmSubsystem;
 public class PickupPositionCommand extends SequentialCommandGroup {
   public PickupPositionCommand(ArmSubsystem armSubsystem) {
 
+    if (ArmSubsystem.armPosition != ArmPosition.DRIVE && 
+        ArmSubsystem.armPosition != ArmPosition.PICK_UP &&
+        ArmSubsystem.armPosition != ArmPosition.HIGH_PICK_UP) {
+      addCommands(new DrivePositionCommand(armSubsystem));
+    }
+
     ArmSubsystem.armPosition = ArmPosition.PICK_UP;
+    addCommands(new WristCommand(armSubsystem, 2, 0));
     addCommands(new InnerArmCommand(armSubsystem, 8.75, 0.3));
+    addCommands(new WristCommand(armSubsystem, 36.7, 0));
     addCommands(new OuterArmCommand(armSubsystem, 12, 0));
-    addCommands(new WristCommand(armSubsystem, 35, 0));
   }
 }

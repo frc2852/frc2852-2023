@@ -24,12 +24,12 @@ public class WristCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    mArmSubsystem.SetWristPosition(mTargetPosition, mSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mArmSubsystem.SetWristPosition(mTargetPosition, mSpeed);
   }
 
   // Called once the command ends or is interrupted.

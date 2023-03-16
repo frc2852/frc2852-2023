@@ -24,12 +24,12 @@ public class InnerArmCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    mArmSubsystem.SetInnerArmPosition(mTargetPosition, mSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mArmSubsystem.SetInnerArmPosition(mTargetPosition, mSpeed);
   }
 
   // Called once the command ends or is interrupted.

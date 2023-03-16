@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -33,10 +34,16 @@ public class IntakeSubsystem extends SubsystemBase {
     public IntakeSubsystem() {
         mLeftIntake = new CANSparkMax(Constants.INTAKE_LEFT_BOTTOM, MotorType.kBrushless);
         configureSpark(mLeftIntake, false);
+        mLeftIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        mLeftIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+        mLeftIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
 
         mRightIntake = new CANSparkMax(Constants.INTAKE_RIGHT_BOTTOM, MotorType.kBrushless);
         configureSpark(mRightIntake, true);
-
+        mRightIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        mRightIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+        mRightIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+        
         mIntakeSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH,
                 Constants.INTAKE_CLOSE,
                 Constants.INTAKE_OPEN);
@@ -55,9 +62,6 @@ public class IntakeSubsystem extends SubsystemBase {
         if (rightMaxCurrent < currentRightCurrent) {
             rightMaxCurrent = currentRightCurrent;
         }
-
-        SmartDashboard.putNumber("Left Intake current", leftMaxCurrent);
-        SmartDashboard.putNumber("Right Intake current", rightMaxCurrent);
     }
 
     public boolean IsIntakeStalled() {

@@ -14,13 +14,16 @@ import frc.robot.subsystems.ArmSubsystem;
 public class ScorePositionMidCubeCommand extends SequentialCommandGroup {
   /** Creates a new LowScorePositionCommand. */
   public ScorePositionMidCubeCommand(ArmSubsystem armSubsystem) {
-    if(ArmSubsystem.armPosition == ArmPosition.PICK_UP || ArmSubsystem.armPosition == ArmPosition.HIGH_PICK_UP){
+    if (ArmSubsystem.armPosition == ArmPosition.PICK_UP || ArmSubsystem.armPosition == ArmPosition.HIGH_PICK_UP) {
       addCommands(new DrivePositionCommand(armSubsystem));
     }
-    
-    ArmSubsystem.armPosition = ArmPosition.MID_GOAL;
-    addCommands(new WristCommand(armSubsystem, 30, 0));
+
+    if (ArmSubsystem.armPosition != ArmPosition.MID_GOAL && ArmSubsystem.armPosition != ArmPosition.HIGH_GOAL) {
+      addCommands(new WristCommand(armSubsystem, 2, 0));
+    }
+
     addCommands(new OuterArmCommand(armSubsystem, -5, 0));
     addCommands(new InnerArmCommand(armSubsystem, -20, 0.3));
+    addCommands(new WristCommand(armSubsystem, 30, 0));
   }
 }

@@ -17,10 +17,13 @@ public class ScorePositionHighCubeCommand extends SequentialCommandGroup {
     if(ArmSubsystem.armPosition == ArmPosition.PICK_UP || ArmSubsystem.armPosition == ArmPosition.HIGH_PICK_UP){
       addCommands(new DrivePositionCommand(armSubsystem));
     }
+
+    if (ArmSubsystem.armPosition != ArmPosition.MID_GOAL && ArmSubsystem.armPosition != ArmPosition.HIGH_GOAL) {
+      addCommands(new WristCommand(armSubsystem, 2, 0));
+    }
     
-    ArmSubsystem.armPosition = ArmPosition.HIGH_GOAL;
-    addCommands(new WristCommand(armSubsystem, -20, 0));
     addCommands(new OuterArmCommand(armSubsystem, -5, 0));
-    addCommands(new InnerArmCommand(armSubsystem, -19, 0.1));
+    addCommands(new WristCommand(armSubsystem, -20, 0));
+    addCommands(new InnerArmCommand(armSubsystem, -19, 0.3));
   }
 }

@@ -11,13 +11,19 @@ import frc.robot.commands.Arm.Pivots.OuterArmCommand;
 import frc.robot.commands.Arm.Pivots.WristCommand;
 import frc.robot.subsystems.ArmSubsystem;
 
-  public class HighPickupPositionCommand extends SequentialCommandGroup {
+public class HighPickupPositionCommand extends SequentialCommandGroup {
   public HighPickupPositionCommand(ArmSubsystem armSubsystem) {
 
+    if (ArmSubsystem.armPosition != ArmPosition.DRIVE && 
+        ArmSubsystem.armPosition != ArmPosition.PICK_UP &&
+        ArmSubsystem.armPosition != ArmPosition.HIGH_PICK_UP) {
+      addCommands(new DrivePositionCommand(armSubsystem));
+    }
+
     ArmSubsystem.armPosition = ArmPosition.HIGH_PICK_UP;
-    addCommands(new WristCommand(armSubsystem, 1, 0));
-    addCommands(new InnerArmCommand(armSubsystem, 13.8, 0.35));
-    addCommands(new OuterArmCommand(armSubsystem, -14, 0));
+    addCommands(new WristCommand(armSubsystem, 2, 0));
+    addCommands(new InnerArmCommand(armSubsystem, 13.8, 0.3));
     addCommands(new WristCommand(armSubsystem, -22, 0));
+    addCommands(new OuterArmCommand(armSubsystem, -14, 0));
   }
 }

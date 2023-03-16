@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
@@ -132,6 +133,9 @@ public class ArmSubsystem extends SubsystemBase {
     outerArmFollower.restoreFactoryDefaults();
     outerArmFollower.setIdleMode(IdleMode.kBrake);
     outerArmFollower.follow(outerArmLeader);
+    outerArmFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+    outerArmFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+    outerArmFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
 
     // PID Controller
     outerArmPIDController = outerArmLeader.getPIDController();
@@ -156,12 +160,12 @@ public class ArmSubsystem extends SubsystemBase {
     outerArmPIDController.setOutputRange(outerMin, outerMax);
 
     // Display PID
-    SmartDashboard.putNumber("OuterP", outerP);
-    SmartDashboard.putNumber("OuterI", outerI);
-    SmartDashboard.putNumber("OuterD", outerD);
-    SmartDashboard.putNumber("OuterMax", outerMax);
-    SmartDashboard.putNumber("OuterMin", outerMin);
-    SmartDashboard.putNumber("OuterRotation", 0);
+    // SmartDashboard.putNumber("OuterP", outerP);
+    // SmartDashboard.putNumber("OuterI", outerI);
+    // SmartDashboard.putNumber("OuterD", outerD);
+    // SmartDashboard.putNumber("OuterMax", outerMax);
+    // SmartDashboard.putNumber("OuterMin", outerMin);
+    // SmartDashboard.putNumber("OuterRotation", 0);
   }
 
   private void InitializeInnerArm() {
@@ -175,6 +179,9 @@ public class ArmSubsystem extends SubsystemBase {
     innerArmFollower.restoreFactoryDefaults();
     innerArmFollower.follow(innerArmLeader, true);
     innerArmFollower.setIdleMode(IdleMode.kBrake);
+    innerArmFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+    innerArmFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+    innerArmFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
 
     // PID Controller
     innerArmPIDController = innerArmLeader.getPIDController();
@@ -199,12 +206,12 @@ public class ArmSubsystem extends SubsystemBase {
     innerArmPIDController.setOutputRange(innerMin, innerMax);
 
     // Display PID
-    SmartDashboard.putNumber("InnerP", innerP);
-    SmartDashboard.putNumber("InnerI", innerI);
-    SmartDashboard.putNumber("InnerD", innerD);
-    SmartDashboard.putNumber("InnerMax", innerMax);
-    SmartDashboard.putNumber("InnerMin", innerMin);
-    SmartDashboard.putNumber("InnerRotation", 0);
+    // SmartDashboard.putNumber("InnerP", innerP);
+    // SmartDashboard.putNumber("InnerI", innerI);
+    // SmartDashboard.putNumber("InnerD", innerD);
+    // SmartDashboard.putNumber("InnerMax", innerMax);
+    // SmartDashboard.putNumber("InnerMin", innerMin);
+    // SmartDashboard.putNumber("InnerRotation", 0);
   }
 
   private void InitializeWrist() {
@@ -237,32 +244,32 @@ public class ArmSubsystem extends SubsystemBase {
     wristPIDController.setOutputRange(wristMin, wristMax);
 
     // Display PID
-    SmartDashboard.putNumber("WristP", wristP);
-    SmartDashboard.putNumber("WristI", wristI);
-    SmartDashboard.putNumber("WristD", wristD);
-    SmartDashboard.putNumber("WristMax", wristMax);
-    SmartDashboard.putNumber("WristMin", wristMin);
-    SmartDashboard.putNumber("WristRotation", 0);
+    // SmartDashboard.putNumber("WristP", wristP);
+    // SmartDashboard.putNumber("WristI", wristI);
+    // SmartDashboard.putNumber("WristD", wristD);
+    // SmartDashboard.putNumber("WristMax", wristMax);
+    // SmartDashboard.putNumber("WristMin", wristMin);
+    // SmartDashboard.putNumber("WristRotation", 0);
   }
 
   private void OuterArmPeriodic() {
     outerArmPIDController.setReference(OUTER_ARM_POSITION, CANSparkMax.ControlType.kPosition);
-    SmartDashboard.putNumber("OuterSetPoint", OUTER_ARM_POSITION);
-    SmartDashboard.putNumber("OuterPosition", outerArmEncoder.getPosition());
+    // SmartDashboard.putNumber("OuterSetPoint", OUTER_ARM_POSITION);
+    // SmartDashboard.putNumber("OuterPosition", outerArmEncoder.getPosition());
     SmartDashboard.putBoolean("Outer Arm Position", IsOuterArmAtPosition());
   }
 
   private void InnerArmPeriodic() {
     innerArmPIDController.setReference(INNER_ARM_POSITION, CANSparkMax.ControlType.kPosition);
-    SmartDashboard.putNumber("InnerSetPoint", INNER_ARM_POSITION);
-    SmartDashboard.putNumber("InnerPosition", innerArmEncoder.getPosition());
+    // SmartDashboard.putNumber("InnerSetPoint", INNER_ARM_POSITION);
+    // SmartDashboard.putNumber("InnerPosition", innerArmEncoder.getPosition());
     SmartDashboard.putBoolean("Inner Arm Position", IsInnerArmAtPosition());
   }
 
   private void WristPeriodic() {
     wristPIDController.setReference(WRIST_POSITION, CANSparkMax.ControlType.kPosition);
-    SmartDashboard.putNumber("WristSetPoint", WRIST_POSITION);
-    SmartDashboard.putNumber("WristPosition", wristEncoder.getPosition());
+    // SmartDashboard.putNumber("WristSetPoint", WRIST_POSITION);
+    // SmartDashboard.putNumber("WristPosition", wristEncoder.getPosition());
     SmartDashboard.putBoolean("wrist Arm Position", IsWristAtPosition());
   }
 
