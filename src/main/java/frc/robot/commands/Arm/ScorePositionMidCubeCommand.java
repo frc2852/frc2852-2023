@@ -22,6 +22,7 @@ public class ScorePositionMidCubeCommand extends SequentialCommandGroup {
       addCommands(new WristCommand(armSubsystem, 2, 0));
     }
 
+    ArmSubsystem.armPosition = ArmPosition.MID_GOAL;
     addCommands(new OuterArmCommand(armSubsystem, -5, 0));
     addCommands(new InnerArmCommand(armSubsystem, -20, 0.3));
     addCommands(new WristCommand(armSubsystem, 30, 0));

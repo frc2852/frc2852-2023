@@ -22,6 +22,7 @@ public class ScorePositionHighCubeCommand extends SequentialCommandGroup {
       addCommands(new WristCommand(armSubsystem, 2, 0));
     }
     
+    ArmSubsystem.armPosition = ArmPosition.HIGH_GOAL;
     addCommands(new OuterArmCommand(armSubsystem, -5, 0));
     addCommands(new WristCommand(armSubsystem, -20, 0));
     addCommands(new InnerArmCommand(armSubsystem, -19, 0.3));
