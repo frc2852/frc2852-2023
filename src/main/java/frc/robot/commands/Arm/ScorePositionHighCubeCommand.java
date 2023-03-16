@@ -18,7 +18,7 @@ public class ScorePositionHighCubeCommand extends SequentialCommandGroup {
       addCommands(new DrivePositionCommand(armSubsystem));
     }
 
-    if (ArmSubsystem.armPosition != ArmPosition.MID_GOAL && ArmSubsystem.armPosition != ArmPosition.HIGH_GOAL) {
+    if (ArmSubsystem.armPosition != ArmPosition.DRIVE && ArmSubsystem.armPosition != ArmPosition.MID_GOAL && ArmSubsystem.armPosition != ArmPosition.HIGH_GOAL) {
       addCommands(new WristCommand(armSubsystem, 2, 0));
     }
     
