@@ -21,9 +21,8 @@ public class HighPickupPositionCommand extends SequentialCommandGroup {
     }
 
     ArmSubsystem.armPosition = ArmPosition.HIGH_PICK_UP;
-    addCommands(new WristCommand(armSubsystem, 2, 0));
     addCommands(new InnerArmCommand(armSubsystem, 13.8, 0.3));
-    addCommands(new WristCommand(armSubsystem, -22, 0));
+    addCommands(new WristCommand(armSubsystem, -22, 0)); //Test if this can run last, after outerArm
     addCommands(new OuterArmCommand(armSubsystem, -14, 0));
   }
 }
