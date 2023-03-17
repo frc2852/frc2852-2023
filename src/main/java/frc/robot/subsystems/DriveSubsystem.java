@@ -36,7 +36,9 @@ public class DriveSubsystem extends SubsystemBase {
   private final double WHEEL_DIAMETER_INCHES = 6.0;
   private final double GEAR_RATIO = 15.0;
   private final double ENCODER_CONVERSION_FACTOR = (1 / (WHEEL_DIAMETER_INCHES * Math.PI)) * GEAR_RATIO;
+
   private double mDistanceToTravelInches = 0;
+  private boolean mAutoStarted = false;
 
   public DriveSubsystem() {
     mLeftLeader = new CANSparkMax(Constants.DRIVE_LEFT_LEADER, MotorType.kBrushless);
@@ -120,6 +122,16 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void DriveForwardInches(double distanceToTravelInches) {
     mDistanceToTravelInches = distanceToTravelInches;
+    mAutoStarted = true;
+  }
+
+  public boolean IsAutoDriveFinished(){
+    return (mAutoStarted && mDistanceToTravelInches == 0);
+  }
+
+  public void ResetAuto(){
+    mAutoStarted = false;
+    mDistanceToTravelInches = 0;
   }
 
   public void ArcadeDrive(double xSpeed, double zRotation) {
