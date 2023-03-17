@@ -100,15 +100,15 @@ public class DriveSubsystem extends SubsystemBase {
 
     if (DriverStation.isAutonomous()) {
       // Dumb auto drive
+
       if (mDistanceToTravelInches > 0) {
+        
         double distancePosition = mDistanceToTravelInches * 0.27; // 3.24
         double distance = distancePosition - mLeftEncoder.getPosition();
+        SmartDashboard.putNumber("Distance", distance);
+
         if (distance > 0.5) {
-          if (mReverseDirection) {
-            mDifferentialDrive.tankDrive(0.39, -0.4);
-          } else {
-            mDifferentialDrive.tankDrive(-0.39, 0.4);
-          }
+          mDifferentialDrive.tankDrive(0.39, -0.4);
         } else {
           mDifferentialDrive.tankDrive(0, 0);
           mDistanceToTravelInches = 0;
