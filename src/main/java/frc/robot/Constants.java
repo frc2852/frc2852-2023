@@ -60,6 +60,7 @@ public final class Constants {
 
   // PneumaticHub
   public static final int PNEUMATIC_HUB = 13;
+  public static final int PIGEON_IMU = 15;
 
   public static final int ONE_FOOT = 12;
   public enum ArmPosition{

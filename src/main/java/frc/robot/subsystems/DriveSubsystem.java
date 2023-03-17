@@ -37,7 +37,12 @@ public class DriveSubsystem extends SubsystemBase {
   private final double ENCODER_CONVERSION_FACTOR = (1 / (WHEEL_DIAMETER_INCHES * Math.PI)) * GEAR_RATIO;
 
   // Auto
+  private double mMotorSpeed = 0;
+
   private double mDistanceToTravelInches = 0;
+  private double mDriveLeftSpeed = 0.39;
+  private double mDriveRightSpeed = 0.4;
+
   private boolean mAutoStarted = false;
 
   public DriveSubsystem() {
@@ -98,24 +103,23 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("High Gear", mIsHighGear);
 
     if (DriverStation.isAutonomous()) {
+
       // Dumb auto drive
-
       if (mDistanceToTravelInches != 0) {
-
         double distancePosition = mDistanceToTravelInches * 0.27; // 3.24
         double distance = distancePosition - mLeftEncoder.getPosition();
         SmartDashboard.putNumber("Distance", distance);
 
         if (distance > 0.5) {
-          mDifferentialDrive.tankDrive(0.39, -0.4);
+          mDifferentialDrive.tankDrive(mDriveLeftSpeed, -mDriveRightSpeed);
         } else if (distance < -0.5) {
-          mDifferentialDrive.tankDrive(-0.39, 0.4);
+          mDifferentialDrive.tankDrive(-mDriveLeftSpeed, mDriveRightSpeed);
         } else {
           mDifferentialDrive.tankDrive(0, 0);
           mDistanceToTravelInches = 0;
         }
       } else {
-        mDifferentialDrive.tankDrive(0, 0);
+        mDifferentialDrive.tankDrive(mMotorSpeed, -mMotorSpeed);
       }
 
     }
@@ -126,13 +130,28 @@ public class DriveSubsystem extends SubsystemBase {
     mAutoStarted = true;
   }
 
+  public void DriveForwardInches(double distanceToTravelInches, double leftSpeed, double rightSpeed) {
+    mDriveLeftSpeed = leftSpeed;
+    mDriveRightSpeed = rightSpeed;
+    
+    mDistanceToTravelInches = distanceToTravelInches;
+    mAutoStarted = true;
+  }
+
   public boolean IsAutoDriveFinished() {
     return (mAutoStarted && mDistanceToTravelInches == 0);
   }
 
   public void ResetAuto() {
     mAutoStarted = false;
+    mDriveLeftSpeed = 0.39;
+    mDriveRightSpeed = 0.4;
     mDistanceToTravelInches = 0;
+    mMotorSpeed = 0;
+  }
+
+  public void SetAutoSpeed(double motorSpeed){
+    mMotorSpeed = motorSpeed;
   }
 
   public void ArcadeDrive(double xSpeed, double zRotation) {

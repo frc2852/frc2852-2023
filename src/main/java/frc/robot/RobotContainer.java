@@ -15,6 +15,8 @@ import frc.robot.commands.Arm.ZeroPositionCommand;
 import frc.robot.commands.Autos.HighScoreCubeDriveForwardAuto;
 import frc.robot.commands.Autos.MidScoreCubeDriveForwardAuto;
 import frc.robot.commands.Autos.MidScorePylonDriveForwardAuto;
+import frc.robot.commands.Autos.Balance.HighCubeBalance;
+import frc.robot.commands.Autos.Balance.HighCubeCommunityBalance;
 import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Drive.ToggleGear;
 import frc.robot.commands.Intake.IntakeCubeCommand;
@@ -73,6 +75,10 @@ public class RobotContainer {
   private final MidScoreCubeDriveForwardAuto mMidScoreCubeDriveForwardAuto = new MidScoreCubeDriveForwardAuto(mDriveSubsystem, mArmSubsystem, mIntakeSubsystem);  
   private final MidScorePylonDriveForwardAuto mMidScorePylonDriveForwardAuto = new MidScorePylonDriveForwardAuto(mDriveSubsystem, mArmSubsystem, mIntakeSubsystem);
 
+  private final HighCubeBalance mHighCubeBalance = new HighCubeBalance(mDriveSubsystem, mArmSubsystem, mIntakeSubsystem);
+  private final HighCubeCommunityBalance mHighCubeCommunityBalance = new HighCubeCommunityBalance(mDriveSubsystem, mArmSubsystem, mIntakeSubsystem);
+
+  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -110,7 +116,10 @@ public class RobotContainer {
   }
 
   private void configureAutoSelection(){
-    autoSelection.setDefaultOption("High score cube - Drive forward", mHighScoreCubeDriveForwardAuto);
+    autoSelection.setDefaultOption("High Cube - Balance", mHighCubeBalance);
+    autoSelection.setDefaultOption("High Cube - Community - Balance", mHighCubeCommunityBalance);
+    autoSelection.addOption("High score cube - Drive forward", mHighScoreCubeDriveForwardAuto);
+    autoSelection.addOption("High score cube - Drive forward", mHighScoreCubeDriveForwardAuto);
     autoSelection.addOption("Mid score cube - Drive forward", mMidScoreCubeDriveForwardAuto);
     autoSelection.addOption("Mid score pylon - Drive forward", mMidScorePylonDriveForwardAuto);
     
