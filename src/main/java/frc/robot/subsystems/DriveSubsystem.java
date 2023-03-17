@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
@@ -37,7 +36,9 @@ public class DriveSubsystem extends SubsystemBase {
   private final double GEAR_RATIO = 15.0;
   private final double ENCODER_CONVERSION_FACTOR = (1 / (WHEEL_DIAMETER_INCHES * Math.PI)) * GEAR_RATIO;
 
+  // Auto
   private double mDistanceToTravelInches = 0;
+  private boolean mReverseDirection = false;
   private boolean mAutoStarted = false;
 
   public DriveSubsystem() {
@@ -104,11 +105,13 @@ public class DriveSubsystem extends SubsystemBase {
         double distance = distancePosition - mLeftEncoder.getPosition();
         if (distance > 0.5) {
 
-          //Back
-          if(mDistanceToTravelInches > 0){
-            mDifferentialDrive.tankDrive(0.39, -0.4);
-          } else if(mDistanceToTravelInches < 0) {
-            mDifferentialDrive.tankDrive(-0.39, 0.4);
+          // Back
+          if (mDistanceToTravelInches > 0) {
+            if (mReverseDirection) {
+              mDifferentialDrive.tankDrive(0.39, -0.4);
+            } else {
+              mDifferentialDrive.tankDrive(-0.39, 0.4);
+            }
           }
         } else {
           mDifferentialDrive.tankDrive(0, 0);
@@ -120,17 +123,19 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
-  public void DriveForwardInches(double distanceToTravelInches) {
+  public void DriveForwardInches(double distanceToTravelInches, boolean reverseDirection) {
     mDistanceToTravelInches = distanceToTravelInches;
+    mReverseDirection = reverseDirection;
     mAutoStarted = true;
   }
 
-  public boolean IsAutoDriveFinished(){
+  public boolean IsAutoDriveFinished() {
     return (mAutoStarted && mDistanceToTravelInches == 0);
   }
 
-  public void ResetAuto(){
+  public void ResetAuto() {
     mAutoStarted = false;
+    mReverseDirection = false;
     mDistanceToTravelInches = 0;
   }
 
