@@ -104,14 +104,10 @@ public class DriveSubsystem extends SubsystemBase {
         double distancePosition = mDistanceToTravelInches * 0.27; // 3.24
         double distance = distancePosition - mLeftEncoder.getPosition();
         if (distance > 0.5) {
-
-          // Back
-          if (mDistanceToTravelInches > 0) {
-            if (mReverseDirection) {
-              mDifferentialDrive.tankDrive(0.39, -0.4);
-            } else {
-              mDifferentialDrive.tankDrive(-0.39, 0.4);
-            }
+          if (mReverseDirection) {
+            mDifferentialDrive.tankDrive(0.39, -0.4);
+          } else {
+            mDifferentialDrive.tankDrive(-0.39, 0.4);
           }
         } else {
           mDifferentialDrive.tankDrive(0, 0);
@@ -120,6 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
       } else {
         mDifferentialDrive.tankDrive(0, 0);
       }
+
     }
   }
 
