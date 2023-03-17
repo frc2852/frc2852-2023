@@ -38,7 +38,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Auto
   private double mDistanceToTravelInches = 0;
-  private boolean mReverseDirection = false;
   private boolean mAutoStarted = false;
 
   public DriveSubsystem() {
@@ -101,14 +100,16 @@ public class DriveSubsystem extends SubsystemBase {
     if (DriverStation.isAutonomous()) {
       // Dumb auto drive
 
-      if (mDistanceToTravelInches > 0) {
-        
+      if (mDistanceToTravelInches != 0) {
+
         double distancePosition = mDistanceToTravelInches * 0.27; // 3.24
         double distance = distancePosition - mLeftEncoder.getPosition();
         SmartDashboard.putNumber("Distance", distance);
 
         if (distance > 0.5) {
           mDifferentialDrive.tankDrive(0.39, -0.4);
+        } else if (distance < -0.5) {
+          mDifferentialDrive.tankDrive(-0.39, 0.4);
         } else {
           mDifferentialDrive.tankDrive(0, 0);
           mDistanceToTravelInches = 0;
@@ -120,9 +121,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
-  public void DriveForwardInches(double distanceToTravelInches, boolean reverseDirection) {
+  public void DriveForwardInches(double distanceToTravelInches) {
     mDistanceToTravelInches = distanceToTravelInches;
-    mReverseDirection = reverseDirection;
     mAutoStarted = true;
   }
 
@@ -132,7 +132,6 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void ResetAuto() {
     mAutoStarted = false;
-    mReverseDirection = false;
     mDistanceToTravelInches = 0;
   }
 
