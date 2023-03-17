@@ -15,6 +15,7 @@ import frc.robot.commands.Arm.ZeroPositionCommand;
 import frc.robot.commands.Autos.HighScoreCubeDriveForwardAuto;
 import frc.robot.commands.Autos.MidScoreCubeDriveForwardAuto;
 import frc.robot.commands.Autos.MidScorePylonDriveForwardAuto;
+import frc.robot.commands.Autos.HighScoreCubeBalanceAuto;
 import frc.robot.commands.Drive.DriveCommand;
 import frc.robot.commands.Drive.ToggleGear;
 import frc.robot.commands.Intake.IntakeCubeCommand;
@@ -72,6 +73,7 @@ public class RobotContainer {
   private final HighScoreCubeDriveForwardAuto mHighScoreCubeDriveForwardAuto = new HighScoreCubeDriveForwardAuto(mDriveSubsystem, mArmSubsystem, mIntakeSubsystem);
   private final MidScoreCubeDriveForwardAuto mMidScoreCubeDriveForwardAuto = new MidScoreCubeDriveForwardAuto(mDriveSubsystem, mArmSubsystem, mIntakeSubsystem);  
   private final MidScorePylonDriveForwardAuto mMidScorePylonDriveForwardAuto = new MidScorePylonDriveForwardAuto(mDriveSubsystem, mArmSubsystem, mIntakeSubsystem);
+  private final HighScoreCubeBalanceAuto mHighScoreCubeBalanceAuto = new HighScoreCubeBalanceAuto(mDriveSubsystem, mArmSubsystem, mIntakeSubsystem);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -113,7 +115,8 @@ public class RobotContainer {
     autoSelection.setDefaultOption("High score cube - Drive forward", mHighScoreCubeDriveForwardAuto);
     autoSelection.addOption("Mid score cube - Drive forward", mMidScoreCubeDriveForwardAuto);
     autoSelection.addOption("Mid score pylon - Drive forward", mMidScorePylonDriveForwardAuto);
-    
+    autoSelection.addOption("High Score Cube - Then Balance", mHighScoreCubeBalanceAuto);
+
     SmartDashboard.putData("Auto Mode", autoSelection);
   }
 
