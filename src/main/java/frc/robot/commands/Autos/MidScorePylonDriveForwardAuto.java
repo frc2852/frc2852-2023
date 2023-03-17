@@ -27,7 +27,7 @@ public class MidScorePylonDriveForwardAuto extends SequentialCommandGroup {
 
     addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT));
     addCommands(new DrivePositionCommand(armSubsystem));
-    
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 15));
+
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 14));
   }
 }
