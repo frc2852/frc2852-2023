@@ -63,6 +63,7 @@ public final class Constants {
 
   public static final int ONE_FOOT = 12;
   public enum ArmPosition{
+    ZERO,
     PICK_UP,
     HIGH_PICK_UP,
     DRIVE,

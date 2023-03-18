@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ArmPosition;
 import frc.robot.commands.Arm.DrivePositionCommand;
 import frc.robot.commands.Arm.HighPickupPositionCommand;
 import frc.robot.commands.Arm.ScorePositionLowCommand;
@@ -80,6 +81,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    ArmSubsystem.armPosition = ArmPosition.ZERO;
+
     // Configure the trigger bindings
     configureDriveController();
     configureOperatorController();

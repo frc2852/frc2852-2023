@@ -8,7 +8,6 @@ import com.revrobotics.CANSparkMaxLowLevel.PeriodicFrame;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -20,7 +19,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private static final double MAX_INTAKE_SPEED = 0.41;
     private static final double MAX_OUTTAKE_SPEED = 1.0;
-    private static final double INTAKE_STALL_CURRENT = 25;
+    private static final double INTAKE_STALL_CURRENT = 27;
 
     public IntakeSubsystem() {
         mLeftIntake = new CANSparkMax(Constants.INTAKE_LEFT_BOTTOM, MotorType.kBrushless);
