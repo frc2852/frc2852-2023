@@ -27,6 +27,6 @@ public class HighScoreCubeBalanceAuto extends SequentialCommandGroup {
     addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT));
     addCommands(new DrivePositionCommand(armSubsystem));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 14));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, 69));
   }
 }

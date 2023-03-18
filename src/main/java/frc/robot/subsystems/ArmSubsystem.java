@@ -160,12 +160,12 @@ public class ArmSubsystem extends SubsystemBase {
     outerArmPIDController.setOutputRange(outerMin, outerMax);
 
     // Display PID
-    // SmartDashboard.putNumber("OuterP", outerP);
-    // SmartDashboard.putNumber("OuterI", outerI);
-    // SmartDashboard.putNumber("OuterD", outerD);
-    // SmartDashboard.putNumber("OuterMax", outerMax);
-    // SmartDashboard.putNumber("OuterMin", outerMin);
-    // SmartDashboard.putNumber("OuterRotation", 0);
+     SmartDashboard.putNumber("OuterP", outerP);
+     SmartDashboard.putNumber("OuterI", outerI);
+     SmartDashboard.putNumber("OuterD", outerD);
+     SmartDashboard.putNumber("OuterMax", outerMax);
+     SmartDashboard.putNumber("OuterMin", outerMin);
+     SmartDashboard.putNumber("OuterRotation", 0);
   }
 
   private void InitializeInnerArm() {
@@ -206,12 +206,12 @@ public class ArmSubsystem extends SubsystemBase {
     innerArmPIDController.setOutputRange(innerMin, innerMax);
 
     // Display PID
-    // SmartDashboard.putNumber("InnerP", innerP);
-    // SmartDashboard.putNumber("InnerI", innerI);
-    // SmartDashboard.putNumber("InnerD", innerD);
-    // SmartDashboard.putNumber("InnerMax", innerMax);
-    // SmartDashboard.putNumber("InnerMin", innerMin);
-    // SmartDashboard.putNumber("InnerRotation", 0);
+    SmartDashboard.putNumber("InnerP", innerP);
+    SmartDashboard.putNumber("InnerI", innerI);
+    SmartDashboard.putNumber("InnerD", innerD);
+    SmartDashboard.putNumber("InnerMax", innerMax);
+    SmartDashboard.putNumber("InnerMin", innerMin);
+    SmartDashboard.putNumber("InnerRotation", 0);
   }
 
   private void InitializeWrist() {
@@ -244,12 +244,12 @@ public class ArmSubsystem extends SubsystemBase {
     wristPIDController.setOutputRange(wristMin, wristMax);
 
     // Display PID
-    // SmartDashboard.putNumber("WristP", wristP);
-    // SmartDashboard.putNumber("WristI", wristI);
-    // SmartDashboard.putNumber("WristD", wristD);
-    // SmartDashboard.putNumber("WristMax", wristMax);
-    // SmartDashboard.putNumber("WristMin", wristMin);
-    // SmartDashboard.putNumber("WristRotation", 0);
+    SmartDashboard.putNumber("WristP", wristP);
+    SmartDashboard.putNumber("WristI", wristI);
+    SmartDashboard.putNumber("WristD", wristD);
+    SmartDashboard.putNumber("WristMax", wristMax);
+    SmartDashboard.putNumber("WristMin", wristMin);
+    SmartDashboard.putNumber("WristRotation", 0);
   }
 
   private void OuterArmPeriodic() {

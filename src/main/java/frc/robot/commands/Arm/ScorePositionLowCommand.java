@@ -19,9 +19,9 @@ public class ScorePositionLowCommand extends SequentialCommandGroup {
     }
 
     ArmSubsystem.armPosition = ArmPosition.LOW_GOAL;
-    addCommands(new WristCommand(armSubsystem, -8, 0));
-    addCommands(new OuterArmCommand(armSubsystem, -12, 0));
     addCommands(new InnerArmCommand(armSubsystem, -7, 0.3));
+    addCommands(new WristCommand(armSubsystem, -13, 0));
+    addCommands(new OuterArmCommand(armSubsystem, -7.5, 0));
 
   }
 }

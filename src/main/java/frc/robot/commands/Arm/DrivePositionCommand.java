@@ -16,8 +16,8 @@ public class DrivePositionCommand extends SequentialCommandGroup {
   public DrivePositionCommand(ArmSubsystem armSubsystem) {
 
     ArmSubsystem.armPosition = ArmPosition.DRIVE;
-    addCommands(new WristCommand(armSubsystem, 2, 0));
-    addCommands(new OuterArmCommand(armSubsystem, -12, 0));
-    addCommands(new InnerArmCommand(armSubsystem, -5, 0.1));
+    addCommands(new WristCommand(armSubsystem, 3, 0));
+    addCommands(new OuterArmCommand(armSubsystem, -7, 0));
+    addCommands(new InnerArmCommand(armSubsystem, -4.5, 0.1));
   }
 }

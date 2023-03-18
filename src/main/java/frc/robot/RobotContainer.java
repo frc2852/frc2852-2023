@@ -24,6 +24,7 @@ import frc.robot.commands.Intake.OuttakeCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -85,6 +86,9 @@ public class RobotContainer {
     configureAutoSelection();
 
     mPneumaticHub.enableCompressorDigital();
+
+    CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
   }
 
   private void configureDriveController() {
@@ -115,7 +119,7 @@ public class RobotContainer {
     autoSelection.setDefaultOption("High score cube - Drive forward", mHighScoreCubeDriveForwardAuto);
     autoSelection.addOption("Mid score cube - Drive forward", mMidScoreCubeDriveForwardAuto);
     autoSelection.addOption("Mid score pylon - Drive forward", mMidScorePylonDriveForwardAuto);
-    autoSelection.addOption("High Score Cube - Then Balance", mHighScoreCubeBalanceAuto);
+    autoSelection.addOption("High Score Cube - Then RAMP", mHighScoreCubeBalanceAuto);
 
     SmartDashboard.putData("Auto Mode", autoSelection);
   }
