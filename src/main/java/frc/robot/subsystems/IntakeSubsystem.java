@@ -17,9 +17,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private DoubleSolenoid mIntakeSolenoid;
 
-    private static final double MAX_INTAKE_SPEED = 0.41;
+    private static final double MAX_INTAKE_SPEED = 0.25;
     private static final double MAX_OUTTAKE_SPEED = 1.0;
-    private static final double INTAKE_STALL_CURRENT = 27;
+    private static final double INTAKE_STALL_CURRENT = 24;
 
     public IntakeSubsystem() {
         mLeftIntake = new CANSparkMax(Constants.INTAKE_LEFT_BOTTOM, MotorType.kBrushless);
