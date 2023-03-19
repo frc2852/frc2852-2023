@@ -13,6 +13,8 @@ import frc.robot.commands.Arm.ScorePositionMidPylonCommand;
 import frc.robot.commands.Arm.PickupPositionCommand;
 import frc.robot.commands.Arm.ScorePositionHighCubeCommand;
 import frc.robot.commands.Arm.ZeroPositionCommand;
+import frc.robot.commands.Arm.Manual.ManualInner;
+import frc.robot.commands.Arm.Manual.ManualWrist;
 import frc.robot.commands.Autos.HighScoreCubeDriveForwardAuto;
 import frc.robot.commands.Autos.MidScoreCubeDriveForwardAuto;
 import frc.robot.commands.Autos.MidScorePylonDriveForwardAuto;
@@ -70,6 +72,12 @@ public class RobotContainer {
   private final ScorePositionMidCubeCommand mScorePositionMidCubeCommand = new ScorePositionMidCubeCommand(mArmSubsystem);
   private final ScorePositionHighCubeCommand mScorePositionHighCubeCommand = new ScorePositionHighCubeCommand(mArmSubsystem);
 
+  private final ManualWrist mManualWristBack = new ManualWrist(false);
+  private final ManualWrist mManualWristForward = new ManualWrist(true);
+
+  private final ManualInner mManualInnerBack = new ManualInner(false);
+  private final ManualInner mManualInnerForward = new ManualInner(true);
+
   //Autos
   private final SendableChooser<Command> autoSelection = new SendableChooser<>();
   private final HighScoreCubeDriveForwardAuto mHighScoreCubeDriveForwardAuto = new HighScoreCubeDriveForwardAuto(mDriveSubsystem, mArmSubsystem, mIntakeSubsystem);
@@ -114,6 +122,10 @@ public class RobotContainer {
     operatorController.leftBumper().onTrue(mHighPickupPositionCommand); //Pick up high position
     operatorController.rightBumper().onTrue(mPickupPositionCommand); //Pick up low position
 
+    operatorController.povUp().onTrue(mManualInnerForward);
+    operatorController.povDown().onTrue(mManualInnerBack);
+    operatorController.povLeft().onTrue(mManualWristForward);
+    operatorController.povRight().onTrue(mManualWristBack);
     //Secret
     operatorController.back().onTrue(mZeroPositionCommand);
   }

@@ -45,9 +45,9 @@ public class ArmSubsystem extends SubsystemBase {
   // Automated positions will not work when enabled
   private final boolean ARM_DEBUG = false;
 
-  private static double OUTER_ARM_POSITION = 0;
-  private static double INNER_ARM_POSITION = 0;
-  private static double WRIST_POSITION = 0;
+  public static double OUTER_ARM_POSITION = 0;
+  public static double INNER_ARM_POSITION = 0;
+  public static double WRIST_POSITION = 0;
 
   private static double ERROR_RANGE = 1;
 
