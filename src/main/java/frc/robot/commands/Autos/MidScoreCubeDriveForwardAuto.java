@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Arm.DrivePositionCommand;
 import frc.robot.commands.Arm.ScorePositionMidCubeCommand;
-import frc.robot.commands.Arm.ScorePositionMidPylonCommand;
 import frc.robot.commands.Drive.DriveForwardDistanceCommand;
 import frc.robot.commands.Intake.TimedOuttakeCommand;
 import frc.robot.subsystems.ArmSubsystem;
@@ -22,12 +21,12 @@ public class MidScoreCubeDriveForwardAuto extends SequentialCommandGroup {
 
     addCommands(new ScorePositionMidCubeCommand(armSubsystem));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, -10));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, -10, 0));
     addCommands(new TimedOuttakeCommand(intakeSubsystem, 2));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT, 0));
     addCommands(new DrivePositionCommand(armSubsystem));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 14));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 14, 0));
   }
 }
