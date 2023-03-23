@@ -97,9 +97,10 @@ public class DriveSubsystem extends SubsystemBase {
     mDistanceToTravelInches = 0;
   }
 
-  public void ArcadeDrive(double xSpeed, double zRotation) {
+  public void ArcadeDrive(double xSpeed, double zRotation, boolean allowTurnInPlace) {
     if (DriverStation.isTeleop()) {
-      mDifferentialDrive.arcadeDrive(xSpeed, zRotation);
+      // mDifferentialDrive.arcadeDrive(xSpeed, zRotation);
+      mDifferentialDrive.curvatureDrive(xSpeed, zRotation, allowTurnInPlace);
     }
   }
 

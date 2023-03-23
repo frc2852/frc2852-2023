@@ -19,6 +19,7 @@ import frc.robot.commands.autos.HighScoreCubeDriveForwardAuto;
 import frc.robot.commands.autos.MidScoreCubeDriveForwardAuto;
 import frc.robot.commands.autos.MidScorePylonDriveForwardAuto;
 import frc.robot.commands.autos.HighScoreCubeBalanceAuto;
+import frc.robot.commands.drive.AutoBalance;
 import frc.robot.commands.drive.Drive;
 import frc.robot.commands.drive.ToggleGear;
 import frc.robot.commands.intake.IntakeCube;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -61,6 +63,8 @@ public class RobotContainer {
   private final Outtake mOuttakeCmd = new Outtake(mIntakeSubsystem);
   private final DrivePosition mDrivePositionCmd = new DrivePosition(mArmSubsystem);
   private final ToggleGear mToggleGearCmd = new ToggleGear(mDriveSubsystem);
+
+  private final AutoBalance mAutoBalance = new AutoBalance(mDriveSubsystem);
 
   // Operator commands
   private final ZeroPosition mZeroPositionCmd = new ZeroPosition(mArmSubsystem);
@@ -107,12 +111,21 @@ public class RobotContainer {
   }
 
   private void configureDriveController() {
-    mDriveSubsystem.setDefaultCommand(
-        new Drive(mDriveSubsystem, () -> driverController.getLeftX(), () -> driverController.getLeftY()));
+    Trigger xButton = driverController.x();
 
+    mDriveSubsystem.setDefaultCommand(
+        new Drive(
+          mDriveSubsystem, 
+          () -> driverController.getLeftX(), 
+          () -> driverController.getLeftY(),
+          () -> xButton.getAsBoolean()));
+
+    // Drive
     driverController.a().onTrue(mDrivePositionCmd);
     driverController.b().onTrue(mToggleGearCmd);
+    driverController.y().onTrue(mAutoBalance);
 
+    // Intake
     driverController.rightBumper().whileTrue(mIntakeCubeCmd);
     driverController.leftBumper().whileTrue(mIntakePylonCmd);
     driverController.rightTrigger().whileTrue(mOuttakeCmd);

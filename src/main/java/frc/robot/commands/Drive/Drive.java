@@ -4,6 +4,7 @@
 
 package frc.robot.commands.drive;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -15,11 +16,13 @@ public class Drive extends CommandBase {
 	private final DriveSubsystem mDriveSubsystem;
 	private final DoubleSupplier mXSpeed;
 	private final DoubleSupplier mZRotation;
+	private final BooleanSupplier mAllowTurnInPlace;
 
-	public Drive(DriveSubsystem driveSubsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation) {
+	public Drive(DriveSubsystem driveSubsystem, DoubleSupplier xSpeed, DoubleSupplier zRotation, BooleanSupplier allowTurnInPlace) {
 		mDriveSubsystem = driveSubsystem;
 		mXSpeed = xSpeed;
 		mZRotation = zRotation;
+		mAllowTurnInPlace = allowTurnInPlace;
 		addRequirements(driveSubsystem);
 	}
 
@@ -31,7 +34,7 @@ public class Drive extends CommandBase {
 	// Called every time the scheduler runs while the command is scheduled.
 	@Override
 	public void execute() {
-		mDriveSubsystem.ArcadeDrive(mXSpeed.getAsDouble(), mZRotation.getAsDouble());
+		mDriveSubsystem.ArcadeDrive(mXSpeed.getAsDouble(), mZRotation.getAsDouble(), mAllowTurnInPlace.getAsBoolean());
 	}
 
 	// Called once the command ends or is interrupted.
