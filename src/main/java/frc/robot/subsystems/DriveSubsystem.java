@@ -156,7 +156,7 @@ public class DriveSubsystem extends SubsystemBase {
     motor.restoreFactoryDefaults();
     motor.setInverted(isInverted);
     motor.enableVoltageCompensation(12.0);
-    motor.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
+    motor.setSmartCurrentLimit(40);
     motor.setIdleMode(IdleMode.kBrake);
   
     if (leader != null) {
@@ -174,7 +174,6 @@ public class DriveSubsystem extends SubsystemBase {
     encoder.setPositionConversionFactor(Constants.DRIVE_ENCODER_CONVERSION_FACTOR);
     return encoder;
   }
-
 
   private void setPeriodicFramePeriods(CANSparkMax motor) {
     motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
