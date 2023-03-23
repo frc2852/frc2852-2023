@@ -11,19 +11,17 @@ public class DriveForwardDistanceCommand extends CommandBase {
 
 	private final DriveSubsystem mDriveSubsystem;
   private final double mDistanceToTravel;
-  private final double mSpeed;
 
-	public DriveForwardDistanceCommand(DriveSubsystem driveSubsystem, double distanceToTravel, double speed) {
+	public DriveForwardDistanceCommand(DriveSubsystem driveSubsystem, double distanceToTravel) {
 		mDriveSubsystem = driveSubsystem;
     mDistanceToTravel = distanceToTravel;
-    mSpeed = speed;
 		addRequirements(driveSubsystem);
 	}
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    mDriveSubsystem.DriveForwardInches(mDistanceToTravel, mSpeed);
+    mDriveSubsystem.DriveForwardInches(mDistanceToTravel);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

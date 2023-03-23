@@ -21,12 +21,12 @@ public class MidScoreCubeDriveForwardAuto extends SequentialCommandGroup {
 
     addCommands(new ScorePositionMidCubeCommand(armSubsystem));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, -10, 0));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, -10));
     addCommands(new TimedOuttakeCommand(intakeSubsystem, 2));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT, 0));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT));
     addCommands(new DrivePositionCommand(armSubsystem));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 14, 0));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 14));
   }
 }

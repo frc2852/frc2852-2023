@@ -21,12 +21,12 @@ public class HighScoreCubeDriveForwardAuto extends SequentialCommandGroup {
 
     addCommands(new ScorePositionHighCubeCommand(armSubsystem));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, -Constants.ONE_FOOT, 0));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, -Constants.ONE_FOOT));
     addCommands(new TimedOuttakeCommand(intakeSubsystem, 2));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT, 0));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT));
     addCommands(new DrivePositionCommand(armSubsystem));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 16, 0));
+    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 16));
   }
 }

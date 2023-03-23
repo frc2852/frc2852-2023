@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -22,75 +23,30 @@ public class DriveSubsystem extends SubsystemBase {
 
   // Hardware
   private final CANSparkMax mLeftLeader, mRightLeader, mLeftFollower, mRightFollower;
-  private RelativeEncoder mLeftEncoder;
-
-  private RelativeEncoder mRightEncoder;
-
-  private DifferentialDrive mDifferentialDrive = null;
+  private final RelativeEncoder mLeftEncoder, mRightEncoder;
+  private final DifferentialDrive mDifferentialDrive;
   private final DoubleSolenoid mShifter;
+  private final PigeonIMU mPigeonIMU;
 
   private boolean mIsHighGear;
-
-  // Move to constants
-  private final double WHEEL_DIAMETER_INCHES = 6.0;
-  private final double GEAR_RATIO = 15.0;
-  private final double ENCODER_CONVERSION_FACTOR = (1 / (WHEEL_DIAMETER_INCHES * Math.PI)) * GEAR_RATIO;
-
-  // Auto
   private double mDistanceToTravelInches = 0;
-  private double autoSpeed = 0;
   private boolean mAutoStarted = false;
 
   public DriveSubsystem() {
-    mLeftLeader = new CANSparkMax(Constants.DRIVE_LEFT_LEADER, MotorType.kBrushless);
-    mLeftLeader.setInverted(false);
-    mLeftLeader.enableVoltageCompensation(12.0);
-    mLeftLeader.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
-    mLeftLeader.setIdleMode(IdleMode.kBrake);
-    mLeftLeader.burnFlash();
+    mLeftLeader = initMotor(Constants.DRIVE_LEFT_LEADER, false, null);
+    mLeftFollower = initMotor(Constants.DRIVE_LEFT_FOLLOWER, false, mLeftLeader);
+    mLeftEncoder = initEncoder(mLeftLeader);
 
-    mLeftEncoder = mLeftLeader.getEncoder();
-    mLeftEncoder.setPosition(0);
-    mLeftEncoder.setPositionConversionFactor(ENCODER_CONVERSION_FACTOR);
-
-    mLeftFollower = new CANSparkMax(Constants.DRIVE_LEFT_FOLLOWER, MotorType.kBrushless);
-    mLeftFollower.setInverted(false);
-    mLeftFollower.enableVoltageCompensation(12.0);
-    mLeftFollower.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
-    mLeftFollower.setIdleMode(IdleMode.kBrake);
-    mLeftFollower.follow(mLeftLeader);
-    mLeftFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-    mLeftFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-    mLeftFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-    mLeftFollower.burnFlash();
-
-    mRightLeader = new CANSparkMax(Constants.DRIVE_RIGHT_LEADER, MotorType.kBrushless);
-    mRightLeader.setInverted(false);
-    mRightLeader.enableVoltageCompensation(12.0);
-    mRightLeader.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
-    mRightLeader.setIdleMode(IdleMode.kBrake);
-    mRightLeader.burnFlash();
-
-    mRightEncoder = mRightLeader.getEncoder();
-    mRightEncoder.setPosition(0);
-    mRightEncoder.setPositionConversionFactor(ENCODER_CONVERSION_FACTOR);
-
-    mRightFollower = new CANSparkMax(Constants.DRIVE_RIGHT_FOLLOWER, MotorType.kBrushless);
-    mRightFollower.setInverted(false);
-    mRightFollower.enableVoltageCompensation(12.0);
-    mRightFollower.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
-    mRightFollower.setIdleMode(IdleMode.kBrake);
-    mRightFollower.follow(mRightLeader);
-    mRightFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-    mRightFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-    mRightFollower.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-    mRightFollower.burnFlash();
+    mRightLeader = initMotor(Constants.DRIVE_RIGHT_LEADER, true, null);
+    mRightFollower = initMotor(Constants.DRIVE_RIGHT_FOLLOWER, true, mRightLeader);
+    mRightEncoder = initEncoder(mRightLeader);
 
     mShifter = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH, Constants.DRIVE_GEAR_BOX_OPEN,
         Constants.DRIVE_GEAR_BOX_CLOSE);
 
-    SetLowGear();
+    mPigeonIMU = new PigeonIMU(Constants.PIGEON_IMU);
 
+    SetLowGear();
     mDifferentialDrive = new DifferentialDrive(mLeftLeader, mRightLeader);
   }
 
@@ -99,24 +55,24 @@ public class DriveSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("High Gear", mIsHighGear);
 
     if (DriverStation.isAutonomous()) {
-      // Dumb auto drive
-
+      // Encoder-based auto drive
       if (mDistanceToTravelInches != 0) {
+        double leftDistance = mDistanceToTravelInches - mLeftEncoder.getPosition();
+        double rightDistance = mDistanceToTravelInches - mRightEncoder.getPosition();
 
-        double distancePosition = mDistanceToTravelInches * 0.27; // 3.24
-        double distance = distancePosition - mLeftEncoder.getPosition();
-        SmartDashboard.putNumber("Distance", distance);
+        SmartDashboard.putNumber("Left Distance", leftDistance);
+        SmartDashboard.putNumber("Right Distance", rightDistance);
 
-        if (distance > 0.5) {
-          double left = autoSpeed == 0 ? 0.39 : autoSpeed;
-          double right = autoSpeed == 0 ? -0.4 : -autoSpeed;
+        double baseSpeed = 0.5;
+        double correctionFactor = 0.05; // Adjust this value to change the sensitivity of the correction
 
-          mDifferentialDrive.tankDrive(left, right);
-        } else if (distance < -0.5) {
-          double left = autoSpeed == 0 ? -0.39 : -autoSpeed;
-          double right = autoSpeed == 0 ? 0.4 : autoSpeed;
+        if (Math.abs(leftDistance) > 0.5 || Math.abs(rightDistance) > 0.5) {
+          double error = leftDistance - rightDistance;
+          double correction = error * correctionFactor;
+          double leftSpeed = baseSpeed + correction;
+          double rightSpeed = baseSpeed - correction;
 
-          mDifferentialDrive.tankDrive(left, right);
+          mDifferentialDrive.tankDrive(leftSpeed, rightSpeed);
         } else {
           mDifferentialDrive.tankDrive(0, 0);
           mDistanceToTravelInches = 0;
@@ -124,13 +80,11 @@ public class DriveSubsystem extends SubsystemBase {
       } else {
         mDifferentialDrive.tankDrive(0, 0);
       }
-
     }
   }
 
-  public void DriveForwardInches(double distanceToTravelInches, double speed) {
+  public void DriveForwardInches(double distanceToTravelInches) {
     mDistanceToTravelInches = distanceToTravelInches;
-    autoSpeed = speed;
     mAutoStarted = true;
   }
 
@@ -157,6 +111,28 @@ public class DriveSubsystem extends SubsystemBase {
     }
   }
 
+  public void AutoBalanceDrive(boolean halfSpeed) {
+    // Get the current pitch from the Pigeon IMU
+    double[] ypr_deg = new double[3];
+    mPigeonIMU.getYawPitchRoll(ypr_deg);
+    double curPitch = Math.sin(Math.toRadians(ypr_deg[1]));
+
+    // Proportional gain
+    double pGain = 2.0;
+
+    // Calculate the output using the proportional gain
+    double output = -curPitch * pGain;
+
+    // Set the maximum output based on the halfSpeed flag
+    double maxOut = halfSpeed ? 0.5 : 1.0;
+
+    // Apply the maximum output limits
+    output = Math.max(-maxOut, Math.min(output, maxOut));
+
+    // Set the output for both left and right drives using tankDrive
+    mDifferentialDrive.tankDrive(output, output);
+  }
+
   public void SetLowGear() {
     mLeftLeader.setIdleMode(IdleMode.kBrake);
     mLeftFollower.setIdleMode(IdleMode.kBrake);
@@ -173,5 +149,36 @@ public class DriveSubsystem extends SubsystemBase {
     mRightFollower.setIdleMode(IdleMode.kCoast);
     mShifter.set(DoubleSolenoid.Value.kForward);
     mIsHighGear = true;
+  }
+
+  private CANSparkMax initMotor(int deviceId, boolean isInverted, CANSparkMax leader) {
+    CANSparkMax motor = new CANSparkMax(deviceId, MotorType.kBrushless);
+    motor.restoreFactoryDefaults();
+    motor.setInverted(isInverted);
+    motor.enableVoltageCompensation(12.0);
+    motor.setClosedLoopRampRate(Constants.DRIVE_VOLTAGE_RAMP_RATE);
+    motor.setIdleMode(IdleMode.kBrake);
+  
+    if (leader != null) {
+      motor.follow(leader);
+      setPeriodicFramePeriods(motor);
+    }
+  
+    motor.burnFlash();
+    return motor;
+  }
+
+  private RelativeEncoder initEncoder(CANSparkMax motor) {
+    RelativeEncoder encoder = motor.getEncoder();
+    encoder.setPosition(0);
+    encoder.setPositionConversionFactor(Constants.DRIVE_ENCODER_CONVERSION_FACTOR);
+    return encoder;
+  }
+
+
+  private void setPeriodicFramePeriods(CANSparkMax motor) {
+    motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+    motor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+    motor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
   }
 }
