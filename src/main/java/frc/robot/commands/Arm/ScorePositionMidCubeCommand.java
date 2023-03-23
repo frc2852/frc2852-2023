@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Arm;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ArmPosition;
 import frc.robot.commands.Arm.Pivots.InnerArmCommand;
@@ -14,13 +15,18 @@ import frc.robot.subsystems.ArmSubsystem;
 public class ScorePositionMidCubeCommand extends SequentialCommandGroup {
   /** Creates a new LowScorePositionCommand. */
   public ScorePositionMidCubeCommand(ArmSubsystem armSubsystem) {
-    if (ArmSubsystem.armPosition == ArmPosition.PICK_UP || ArmSubsystem.armPosition == ArmPosition.HIGH_PICK_UP) {
-      addCommands(new DrivePositionCommand(armSubsystem));
-    }
 
-    if (ArmSubsystem.armPosition != ArmPosition.MID_GOAL && ArmSubsystem.armPosition != ArmPosition.HIGH_GOAL) {
-      addCommands(new WristCommand(armSubsystem, 2, 0));
-    }
+    addCommands(new InstantCommand(() -> {
+      if(ArmSubsystem.armPosition == ArmPosition.PICK_UP || ArmSubsystem.armPosition == ArmPosition.HIGH_PICK_UP){
+        new DrivePositionCommand(armSubsystem).schedule();
+      }
+    }));
+
+    addCommands(new InstantCommand(() -> {
+      if (ArmSubsystem.armPosition != ArmPosition.MID_GOAL && ArmSubsystem.armPosition != ArmPosition.HIGH_GOAL) {
+        new WristCommand(armSubsystem, 2, 0).schedule();;
+      }
+    }));
 
     ArmSubsystem.armPosition = ArmPosition.MID_GOAL;
     addCommands(new InnerArmCommand(armSubsystem, -20, 0.4));

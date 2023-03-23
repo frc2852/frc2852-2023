@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Arm;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ArmPosition;
 import frc.robot.commands.Arm.Pivots.InnerArmCommand;
@@ -14,9 +15,12 @@ import frc.robot.subsystems.ArmSubsystem;
 public class ScorePositionLowCommand extends SequentialCommandGroup {
   /** Creates a new LowScorePositionCommand. */
   public ScorePositionLowCommand(ArmSubsystem armSubsystem) {
-    if(ArmSubsystem.armPosition == ArmPosition.PICK_UP || ArmSubsystem.armPosition == ArmPosition.HIGH_PICK_UP){
-      addCommands(new DrivePositionCommand(armSubsystem));
-    }
+
+    addCommands(new InstantCommand(() -> {
+      if(ArmSubsystem.armPosition == ArmPosition.PICK_UP || ArmSubsystem.armPosition == ArmPosition.HIGH_PICK_UP){
+        new DrivePositionCommand(armSubsystem).schedule();
+      }
+    }));
 
     ArmSubsystem.armPosition = ArmPosition.LOW_GOAL;
     addCommands(new InnerArmCommand(armSubsystem, -7, 0.4));

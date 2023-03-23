@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Arm;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ArmPosition;
 import frc.robot.commands.Arm.Pivots.InnerArmCommand;
@@ -15,9 +16,11 @@ public class DrivePositionCommand extends SequentialCommandGroup {
   /** Creates a new DrivePositionCommand. */
   public DrivePositionCommand(ArmSubsystem armSubsystem) {
 
-    //if(ArmSubsystem.armPosition == ArmPosition.PICK_UP){
-      //addCommands(new InnerArmCommand(armSubsystem, 9.75, 0.2));
-    //}
+    addCommands(new InstantCommand(() -> {
+      if (ArmSubsystem.armPosition == ArmPosition.PICK_UP) {
+        new InnerArmCommand(armSubsystem, -7.5, 0.1).schedule();
+      }
+    }));
 
     ArmSubsystem.armPosition = ArmPosition.DRIVE;
     addCommands(new WristCommand(armSubsystem, 3, 0));
