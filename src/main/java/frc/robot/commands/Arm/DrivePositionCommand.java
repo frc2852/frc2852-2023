@@ -17,12 +17,12 @@ public class DrivePositionCommand extends SequentialCommandGroup {
   public DrivePositionCommand(ArmSubsystem armSubsystem) {
 
     addCommands(new InstantCommand(() -> {
-      if (ArmSubsystem.armPosition == ArmPosition.PICK_UP) {
+      if (ArmSubsystem.ARM_POSITION == ArmPosition.PICK_UP) {
         new InnerArmCommand(armSubsystem, -7.5, 0.1).schedule();
       }
     }));
 
-    ArmSubsystem.armPosition = ArmPosition.DRIVE;
+    ArmSubsystem.ARM_POSITION = ArmPosition.DRIVE;
     addCommands(new WristCommand(armSubsystem, 3, 0));
     addCommands(new OuterArmCommand(armSubsystem, -5, 0));
     addCommands(new InnerArmCommand(armSubsystem, -4.5, 0.1));

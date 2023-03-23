@@ -16,14 +16,14 @@ public class PickupPositionCommand extends SequentialCommandGroup {
   public PickupPositionCommand(ArmSubsystem armSubsystem) {
 
     addCommands(new InstantCommand(() -> {
-      if (ArmSubsystem.armPosition != ArmPosition.DRIVE &&
-          ArmSubsystem.armPosition != ArmPosition.PICK_UP &&
-          ArmSubsystem.armPosition != ArmPosition.HIGH_PICK_UP) {
+      if (ArmSubsystem.ARM_POSITION != ArmPosition.DRIVE &&
+          ArmSubsystem.ARM_POSITION != ArmPosition.PICK_UP &&
+          ArmSubsystem.ARM_POSITION != ArmPosition.HIGH_PICK_UP) {
         new InnerArmCommand(armSubsystem, -7.5, 0.1).schedule();
       }
     }));
 
-    ArmSubsystem.armPosition = ArmPosition.PICK_UP;
+    ArmSubsystem.ARM_POSITION = ArmPosition.PICK_UP;
     addCommands(new InnerArmCommand(armSubsystem, 9.75, 0.3));
     addCommands(new WristCommand(armSubsystem, 35.2, 0));
     addCommands(new OuterArmCommand(armSubsystem, 11.8, 0));

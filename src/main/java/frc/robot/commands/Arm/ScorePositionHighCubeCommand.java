@@ -17,19 +17,19 @@ public class ScorePositionHighCubeCommand extends SequentialCommandGroup {
   public ScorePositionHighCubeCommand(ArmSubsystem armSubsystem) {
 
     addCommands(new InstantCommand(() -> {
-      if (ArmSubsystem.armPosition == ArmPosition.PICK_UP || ArmSubsystem.armPosition == ArmPosition.HIGH_PICK_UP) {
+      if (ArmSubsystem.ARM_POSITION == ArmPosition.PICK_UP || ArmSubsystem.ARM_POSITION == ArmPosition.HIGH_PICK_UP) {
         new DrivePositionCommand(armSubsystem).schedule();
       }
     }));
 
     addCommands(new InstantCommand(() -> {
-      if (ArmSubsystem.armPosition != ArmPosition.DRIVE && ArmSubsystem.armPosition != ArmPosition.MID_GOAL
-          && ArmSubsystem.armPosition != ArmPosition.HIGH_GOAL) {
+      if (ArmSubsystem.ARM_POSITION != ArmPosition.DRIVE && ArmSubsystem.ARM_POSITION != ArmPosition.MID_GOAL
+          && ArmSubsystem.ARM_POSITION != ArmPosition.HIGH_GOAL) {
         new WristCommand(armSubsystem, 2, 0).schedule();
       }
     }));
 
-    ArmSubsystem.armPosition = ArmPosition.HIGH_GOAL;
+    ArmSubsystem.ARM_POSITION = ArmPosition.HIGH_GOAL;
     addCommands(new InnerArmCommand(armSubsystem, -19, 0.4));
     addCommands(new WristCommand(armSubsystem, -20, 0));
     addCommands(new OuterArmCommand(armSubsystem, -3.5, 0));

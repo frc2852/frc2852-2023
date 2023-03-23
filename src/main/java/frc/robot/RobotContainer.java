@@ -89,7 +89,7 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    ArmSubsystem.armPosition = ArmPosition.ZERO;
+    ArmSubsystem.ARM_POSITION = ArmPosition.ZERO;
 
     // Configure the trigger bindings
     configureDriveController();

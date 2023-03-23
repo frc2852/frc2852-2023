@@ -16,14 +16,14 @@ public class HighPickupPositionCommand extends SequentialCommandGroup {
   public HighPickupPositionCommand(ArmSubsystem armSubsystem) {
 
     addCommands(new InstantCommand(() -> {
-      if (ArmSubsystem.armPosition != ArmPosition.DRIVE &&
-          ArmSubsystem.armPosition != ArmPosition.PICK_UP &&
-          ArmSubsystem.armPosition != ArmPosition.HIGH_PICK_UP) {
+      if (ArmSubsystem.ARM_POSITION != ArmPosition.DRIVE &&
+          ArmSubsystem.ARM_POSITION != ArmPosition.PICK_UP &&
+          ArmSubsystem.ARM_POSITION != ArmPosition.HIGH_PICK_UP) {
         new DrivePositionCommand(armSubsystem).schedule();
       }
     }));
 
-    ArmSubsystem.armPosition = ArmPosition.HIGH_PICK_UP;
+    ArmSubsystem.ARM_POSITION = ArmPosition.HIGH_PICK_UP;
     addCommands(new InnerArmCommand(armSubsystem, 14.9, 0.4));
     addCommands(new WristCommand(armSubsystem, -21.3, 0)); // Test if this can run last, after outerArm
     addCommands(new OuterArmCommand(armSubsystem, -15.5, 0));

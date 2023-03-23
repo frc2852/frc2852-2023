@@ -84,7 +84,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    SmartDashboard.putString("Arm Position", ArmSubsystem.armPosition.name());
+    SmartDashboard.putString("Arm Position", ArmSubsystem.ARM_POSITION.name());
   }
 
   @Override
