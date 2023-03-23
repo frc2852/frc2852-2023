@@ -22,26 +22,9 @@ public class IntakeSubsystem extends SubsystemBase {
     private static final double INTAKE_STALL_CURRENT = 24;
 
     public IntakeSubsystem() {
-        mLeftIntake = new CANSparkMax(Constants.INTAKE_LEFT_BOTTOM, MotorType.kBrushless);
-        mLeftIntake.setInverted(false);
-        mLeftIntake.setIdleMode(IdleMode.kBrake);
-        mLeftIntake.enableVoltageCompensation(12.0);
-        mLeftIntake.burnFlash();
+        mLeftIntake = initMotor(Constants.INTAKE_LEFT, false);
+        mRightIntake = initMotor(Constants.INTAKE_RIGHT, true);
 
-        mLeftIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-        mLeftIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-        mLeftIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-
-        mRightIntake = new CANSparkMax(Constants.INTAKE_RIGHT_BOTTOM, MotorType.kBrushless);
-        mRightIntake.setInverted(true);
-        mRightIntake.setIdleMode(IdleMode.kBrake);
-        mRightIntake.enableVoltageCompensation(12.0);
-        mRightIntake.burnFlash();
-
-        mRightIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
-        mRightIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
-        mRightIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
-        
         mIntakeSolenoid = new DoubleSolenoid(Constants.PNEUMATIC_HUB, PneumaticsModuleType.REVPH,
                 Constants.INTAKE_CLOSE,
                 Constants.INTAKE_OPEN);
@@ -78,5 +61,22 @@ public class IntakeSubsystem extends SubsystemBase {
 
     public void setIntakePosition(Value solenoidPosition) {
         mIntakeSolenoid.set(solenoidPosition);
+    }
+
+    private CANSparkMax initMotor(int deviceId, boolean isInverted) {
+        CANSparkMax motor = new CANSparkMax(deviceId, MotorType.kBrushless);
+        motor.restoreFactoryDefaults();
+        motor.setInverted(isInverted);
+        motor.enableVoltageCompensation(12.0);
+        motor.setSmartCurrentLimit(20);
+        motor.setIdleMode(IdleMode.kBrake);
+
+        // Minimimize CAN bus usage
+        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus0, 100);
+        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 500);
+        motor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
+
+        motor.burnFlash();
+        return motor;
     }
 }
