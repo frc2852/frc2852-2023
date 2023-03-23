@@ -2,35 +2,30 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.arm.manual;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 
-public class ManualWrist extends CommandBase {
-  /** Creates a new ManualInner. */
+public class OpenIntake extends CommandBase {
 
-  private boolean mForward;
+  private final IntakeSubsystem mIntakeSubsystem;
 
-  public ManualWrist(boolean forward) {
-    mForward = forward;
-    // Use addRequirements() here to declare subsystem dependencies.
+  public OpenIntake(IntakeSubsystem intakeSubsystem) {
+    mIntakeSubsystem = intakeSubsystem;
+    addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    mIntakeSubsystem.setIntakePosition(DoubleSolenoid.Value.kReverse);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (mForward) {
-      ArmSubsystem.WRIST_POSITION = ArmSubsystem.WRIST_POSITION + 1;
-    } else {
-      ArmSubsystem.WRIST_POSITION = ArmSubsystem.WRIST_POSITION - 1;
-    }
   }
 
   // Called once the command ends or is interrupted.

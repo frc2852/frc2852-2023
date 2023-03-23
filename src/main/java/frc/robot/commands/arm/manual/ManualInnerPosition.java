@@ -2,41 +2,45 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.drive;
+package frc.robot.commands.arm.manual;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 
-public class DriveForwardDistanceCommand extends CommandBase {
+public class ManualInnerPosition extends CommandBase {
+  /** Creates a new ManualInner. */
 
-	private final DriveSubsystem mDriveSubsystem;
-  private final double mDistanceToTravel;
+  private boolean mForward;
 
-	public DriveForwardDistanceCommand(DriveSubsystem driveSubsystem, double distanceToTravel) {
-		mDriveSubsystem = driveSubsystem;
-    mDistanceToTravel = distanceToTravel;
-		addRequirements(driveSubsystem);
-	}
+  public ManualInnerPosition(boolean forward) {
+    mForward = forward;
+    // Use addRequirements() here to declare subsystem dependencies.
+  }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    mDriveSubsystem.DriveForwardInches(mDistanceToTravel);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (mForward) {
+      ArmSubsystem.INNER_ARM_POSITION = ArmSubsystem.INNER_ARM_POSITION + 1;
+    } else {
+      ArmSubsystem.INNER_ARM_POSITION = ArmSubsystem.INNER_ARM_POSITION - 1;
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    mDriveSubsystem.ResetAuto();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return mDriveSubsystem.IsAutoDriveFinished();
+    return true;
   }
 }

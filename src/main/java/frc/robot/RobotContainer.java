@@ -5,25 +5,25 @@
 package frc.robot;
 
 import frc.robot.Constants.ArmPosition;
-import frc.robot.commands.arm.DrivePositionCommand;
-import frc.robot.commands.arm.HighPickupPositionCommand;
-import frc.robot.commands.arm.ScorePositionLowCommand;
-import frc.robot.commands.arm.ScorePositionMidCubeCommand;
-import frc.robot.commands.arm.ScorePositionMidPylonCommand;
-import frc.robot.commands.arm.PickupPositionCommand;
-import frc.robot.commands.arm.ScorePositionHighCubeCommand;
-import frc.robot.commands.arm.ZeroPositionCommand;
-import frc.robot.commands.arm.manual.ManualInner;
-import frc.robot.commands.arm.manual.ManualWrist;
+import frc.robot.commands.arm.DrivePosition;
+import frc.robot.commands.arm.HighPickupPosition;
+import frc.robot.commands.arm.ScorePositionLow;
+import frc.robot.commands.arm.ScorePositionMidCube;
+import frc.robot.commands.arm.ScorePositionMidPylon;
+import frc.robot.commands.arm.PickupPosition;
+import frc.robot.commands.arm.ScorePositionHighCube;
+import frc.robot.commands.arm.ZeroPosition;
+import frc.robot.commands.arm.manual.ManualInnerPosition;
+import frc.robot.commands.arm.manual.ManualWristPosition;
 import frc.robot.commands.autos.HighScoreCubeDriveForwardAuto;
 import frc.robot.commands.autos.MidScoreCubeDriveForwardAuto;
 import frc.robot.commands.autos.MidScorePylonDriveForwardAuto;
 import frc.robot.commands.autos.HighScoreCubeBalanceAuto;
-import frc.robot.commands.drive.DriveCommand;
+import frc.robot.commands.drive.Drive;
 import frc.robot.commands.drive.ToggleGear;
-import frc.robot.commands.intake.IntakeCubeCommand;
-import frc.robot.commands.intake.IntakePylonCommand;
-import frc.robot.commands.intake.OuttakeCommand;
+import frc.robot.commands.intake.IntakeCube;
+import frc.robot.commands.intake.IntakePylon;
+import frc.robot.commands.intake.Outtake;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -56,30 +56,27 @@ public class RobotContainer {
   private final PneumaticHub mPneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB);
 
   // Driver commands
-  private final IntakeCubeCommand mIntakeCubeCommand = new IntakeCubeCommand(mIntakeSubsystem);
-  private final IntakePylonCommand mIntakePylonCommand = new IntakePylonCommand(mIntakeSubsystem);
-  private final OuttakeCommand mOuttakeCommand = new OuttakeCommand(mIntakeSubsystem);
-  private final DrivePositionCommand mDrivePositionCommand = new DrivePositionCommand(mArmSubsystem);
-  private final ToggleGear mToggleGearCommand = new ToggleGear(mDriveSubsystem);
+  private final IntakeCube mIntakeCubeCmd = new IntakeCube(mIntakeSubsystem);
+  private final IntakePylon mIntakePylonCmd = new IntakePylon(mIntakeSubsystem);
+  private final Outtake mOuttakeCmd = new Outtake(mIntakeSubsystem);
+  private final DrivePosition mDrivePositionCmd = new DrivePosition(mArmSubsystem);
+  private final ToggleGear mToggleGearCmd = new ToggleGear(mDriveSubsystem);
 
   // Operator commands
-  private final ZeroPositionCommand mZeroPositionCommand = new ZeroPositionCommand(mArmSubsystem);
-  private final PickupPositionCommand mPickupPositionCommand = new PickupPositionCommand(mArmSubsystem);
-  private final HighPickupPositionCommand mHighPickupPositionCommand = new HighPickupPositionCommand(mArmSubsystem);
+  private final ZeroPosition mZeroPositionCmd = new ZeroPosition(mArmSubsystem);
+  private final PickupPosition mPickupPositionCmd = new PickupPosition(mArmSubsystem);
+  private final HighPickupPosition mHighPickupPositionCmd = new HighPickupPosition(mArmSubsystem);
 
-  private final ScorePositionLowCommand mScorePositionLowCommand = new ScorePositionLowCommand(mArmSubsystem);
-  private final ScorePositionMidPylonCommand mScorePositionMidPylonCommand = new ScorePositionMidPylonCommand(
-      mArmSubsystem);
-  private final ScorePositionMidCubeCommand mScorePositionMidCubeCommand = new ScorePositionMidCubeCommand(
-      mArmSubsystem);
-  private final ScorePositionHighCubeCommand mScorePositionHighCubeCommand = new ScorePositionHighCubeCommand(
-      mArmSubsystem);
+  private final ScorePositionLow mScorePositionLowCmd = new ScorePositionLow(mArmSubsystem);
+  private final ScorePositionMidPylon mScorePositionMidPylonCmd = new ScorePositionMidPylon(mArmSubsystem);
+  private final ScorePositionMidCube mScorePositionMidCubeCmd = new ScorePositionMidCube(mArmSubsystem);
+  private final ScorePositionHighCube mScorePositionHighCubeCmd = new ScorePositionHighCube(mArmSubsystem);
 
-  private final ManualWrist mManualWristBack = new ManualWrist(false);
-  private final ManualWrist mManualWristForward = new ManualWrist(true);
+  private final ManualWristPosition mManualWristBack = new ManualWristPosition(false);
+  private final ManualWristPosition mManualWristForward = new ManualWristPosition(true);
 
-  private final ManualInner mManualInnerBack = new ManualInner(false);
-  private final ManualInner mManualInnerForward = new ManualInner(true);
+  private final ManualInnerPosition mManualInnerBack = new ManualInnerPosition(false);
+  private final ManualInnerPosition mManualInnerForward = new ManualInnerPosition(true);
 
   // Autos
   private final SendableChooser<Command> autoSelection = new SendableChooser<>();
@@ -111,30 +108,30 @@ public class RobotContainer {
 
   private void configureDriveController() {
     mDriveSubsystem.setDefaultCommand(
-        new DriveCommand(mDriveSubsystem, () -> driverController.getLeftX(), () -> driverController.getLeftY()));
+        new Drive(mDriveSubsystem, () -> driverController.getLeftX(), () -> driverController.getLeftY()));
 
-    driverController.a().onTrue(mDrivePositionCommand);
-    driverController.b().onTrue(mToggleGearCommand);
+    driverController.a().onTrue(mDrivePositionCmd);
+    driverController.b().onTrue(mToggleGearCmd);
 
-    driverController.rightBumper().whileTrue(mIntakeCubeCommand);
-    driverController.leftBumper().whileTrue(mIntakePylonCommand);
-    driverController.rightTrigger().whileTrue(mOuttakeCommand);
+    driverController.rightBumper().whileTrue(mIntakeCubeCmd);
+    driverController.leftBumper().whileTrue(mIntakePylonCmd);
+    driverController.rightTrigger().whileTrue(mOuttakeCmd);
   }
 
   private void configureOperatorController() {
-    operatorController.a().onTrue(mScorePositionLowCommand);
-    operatorController.b().onTrue(mScorePositionMidPylonCommand); // Mid score position pylon
-    operatorController.x().onTrue(mScorePositionMidCubeCommand); // Mid score position cube
-    operatorController.y().onTrue(mScorePositionHighCubeCommand); // High score position cube
-    operatorController.leftBumper().onTrue(mHighPickupPositionCommand); // Pick up high position
-    operatorController.rightBumper().onTrue(mPickupPositionCommand); // Pick up low position
+    operatorController.a().onTrue(mScorePositionLowCmd);
+    operatorController.b().onTrue(mScorePositionMidPylonCmd); // Mid score position pylon
+    operatorController.x().onTrue(mScorePositionMidCubeCmd); // Mid score position cube
+    operatorController.y().onTrue(mScorePositionHighCubeCmd); // High score position cube
+    operatorController.leftBumper().onTrue(mHighPickupPositionCmd); // Pick up high position
+    operatorController.rightBumper().onTrue(mPickupPositionCmd); // Pick up low position
 
     operatorController.povUp().onTrue(mManualInnerForward);
     operatorController.povDown().onTrue(mManualInnerBack);
     operatorController.povLeft().onTrue(mManualWristForward);
     operatorController.povRight().onTrue(mManualWristBack);
     // Secret
-    operatorController.back().onTrue(mZeroPositionCommand);
+    operatorController.back().onTrue(mZeroPositionCmd);
   }
 
   private void configureAutoSelection() {

@@ -2,44 +2,40 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.arm.pivots;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
 
-public class WristCommand extends CommandBase {
+public class IntakePylon extends CommandBase {
 
-  private final ArmSubsystem mArmSubsystem;
-  private final double mTargetPosition;
-  private final double mSpeed;
+  private final IntakeSubsystem mIntakeSubsystem;
 
-  /** Creates a new OuterArmCommand. */
-  public WristCommand(ArmSubsystem armSubsystem, double targetPosition, double speed) {
-    mArmSubsystem = armSubsystem;
-    mTargetPosition = targetPosition;
-    mSpeed = speed;
-    addRequirements(armSubsystem);
+  public IntakePylon(IntakeSubsystem intakeSubsystem) {
+    mIntakeSubsystem = intakeSubsystem;
+    addRequirements(intakeSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    mArmSubsystem.setWristPosition(mTargetPosition, mSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    mIntakeSubsystem.ingestIntake(false);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    mIntakeSubsystem.stopIntake();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return mArmSubsystem.isWristAtPosition();
+    return false;
   }
 }

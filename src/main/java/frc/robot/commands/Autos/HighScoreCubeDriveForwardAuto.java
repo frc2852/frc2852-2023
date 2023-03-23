@@ -6,10 +6,10 @@ package frc.robot.commands.autos;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.commands.arm.DrivePositionCommand;
-import frc.robot.commands.arm.ScorePositionHighCubeCommand;
-import frc.robot.commands.drive.DriveForwardDistanceCommand;
-import frc.robot.commands.intake.TimedOuttakeCommand;
+import frc.robot.commands.arm.DrivePosition;
+import frc.robot.commands.arm.ScorePositionHighCube;
+import frc.robot.commands.drive.DriveForwardDistance;
+import frc.robot.commands.intake.TimedOuttake;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -17,16 +17,16 @@ import frc.robot.subsystems.IntakeSubsystem;
 public class HighScoreCubeDriveForwardAuto extends SequentialCommandGroup {
   public HighScoreCubeDriveForwardAuto(DriveSubsystem driveSubsystem, ArmSubsystem armSubsystem,
       IntakeSubsystem intakeSubsystem) {
-    addCommands(new DrivePositionCommand(armSubsystem));
+    addCommands(new DrivePosition(armSubsystem));
 
-    addCommands(new ScorePositionHighCubeCommand(armSubsystem));
+    addCommands(new ScorePositionHighCube(armSubsystem));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, -Constants.ONE_FOOT));
-    addCommands(new TimedOuttakeCommand(intakeSubsystem, 2));
+    addCommands(new DriveForwardDistance(driveSubsystem, -Constants.ONE_FOOT));
+    addCommands(new TimedOuttake(intakeSubsystem, 2));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT));
-    addCommands(new DrivePositionCommand(armSubsystem));
+    addCommands(new DriveForwardDistance(driveSubsystem, Constants.ONE_FOOT));
+    addCommands(new DrivePosition(armSubsystem));
 
-    addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 16));
+    addCommands(new DriveForwardDistance(driveSubsystem, Constants.ONE_FOOT * 16));
   }
 }

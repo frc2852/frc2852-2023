@@ -7,11 +7,11 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class OuttakeCommand extends CommandBase {
+public class IntakeCube extends CommandBase {
 
   private final IntakeSubsystem mIntakeSubsystem;
 
-  public OuttakeCommand(IntakeSubsystem intakeSubsystem) {
+  public IntakeCube(IntakeSubsystem intakeSubsystem) {
     mIntakeSubsystem = intakeSubsystem;
     addRequirements(intakeSubsystem);
   }
@@ -24,7 +24,7 @@ public class OuttakeCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mIntakeSubsystem.regurgitateIntake();
+    mIntakeSubsystem.ingestIntake(true);
   }
 
   // Called once the command ends or is interrupted.
@@ -36,6 +36,6 @@ public class OuttakeCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return mIntakeSubsystem.IsIntakeStalled();
   }
 }

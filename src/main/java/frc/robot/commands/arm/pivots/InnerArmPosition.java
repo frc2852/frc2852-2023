@@ -7,14 +7,14 @@ package frc.robot.commands.arm.pivots;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class OuterArmCommand extends CommandBase {
+public class InnerArmPosition extends CommandBase {
 
   private final ArmSubsystem mArmSubsystem;
   private final double mTargetPosition;
   private final double mSpeed;
 
   /** Creates a new OuterArmCommand. */
-  public OuterArmCommand(ArmSubsystem armSubsystem, double targetPosition, double speed) {
+  public InnerArmPosition(ArmSubsystem armSubsystem, double targetPosition, double speed) {
     mArmSubsystem = armSubsystem;
     mTargetPosition = targetPosition;
     mSpeed = speed;
@@ -24,7 +24,7 @@ public class OuterArmCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    mArmSubsystem.setOuterArmPosition(mTargetPosition, mSpeed);
+    mArmSubsystem.setInnerArmPosition(mTargetPosition, mSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,6 +40,6 @@ public class OuterArmCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return mArmSubsystem.isOuterArmAtPosition();
+    return mArmSubsystem.isInnerArmAtPosition();
   }
 }

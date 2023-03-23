@@ -7,11 +7,11 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.IntakeSubsystem;
 
-public class IntakePylonCommand extends CommandBase {
+public class Outtake extends CommandBase {
 
   private final IntakeSubsystem mIntakeSubsystem;
 
-  public IntakePylonCommand(IntakeSubsystem intakeSubsystem) {
+  public Outtake(IntakeSubsystem intakeSubsystem) {
     mIntakeSubsystem = intakeSubsystem;
     addRequirements(intakeSubsystem);
   }
@@ -24,7 +24,7 @@ public class IntakePylonCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    mIntakeSubsystem.ingestIntake(false);
+    mIntakeSubsystem.regurgitateIntake();
   }
 
   // Called once the command ends or is interrupted.

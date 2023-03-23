@@ -7,24 +7,24 @@ package frc.robot.commands.arm;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ArmPosition;
-import frc.robot.commands.arm.pivots.InnerArmCommand;
-import frc.robot.commands.arm.pivots.OuterArmCommand;
-import frc.robot.commands.arm.pivots.WristCommand;
+import frc.robot.commands.arm.pivots.InnerArmPosition;
+import frc.robot.commands.arm.pivots.OuterArmPosition;
+import frc.robot.commands.arm.pivots.WristPosition;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class DrivePositionCommand extends SequentialCommandGroup {
+public class DrivePosition extends SequentialCommandGroup {
   /** Creates a new DrivePositionCommand. */
-  public DrivePositionCommand(ArmSubsystem armSubsystem) {
+  public DrivePosition(ArmSubsystem armSubsystem) {
 
     addCommands(new InstantCommand(() -> {
       if (ArmSubsystem.ARM_POSITION == ArmPosition.PICK_UP) {
-        new InnerArmCommand(armSubsystem, -7.5, 0.1).schedule();
+        new InnerArmPosition(armSubsystem, -7.5, 0.1).schedule();
       }
     }));
 
     ArmSubsystem.ARM_POSITION = ArmPosition.DRIVE;
-    addCommands(new WristCommand(armSubsystem, 3, 0));
-    addCommands(new OuterArmCommand(armSubsystem, -5, 0));
-    addCommands(new InnerArmCommand(armSubsystem, -4.5, 0.1));
+    addCommands(new WristPosition(armSubsystem, 3, 0));
+    addCommands(new OuterArmPosition(armSubsystem, -5, 0));
+    addCommands(new InnerArmPosition(armSubsystem, -4.5, 0.1));
   }
 }

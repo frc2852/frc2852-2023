@@ -2,30 +2,29 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.intake;
+package frc.robot.commands.arm.pivots;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ArmSubsystem;
 
-public class TimedOuttakeCommand extends CommandBase {
+public class WristPosition extends CommandBase {
 
-  private final IntakeSubsystem mIntakeSubsystem;
-  private final double mRunTime;
-  private final Timer mTimer = new Timer();
+  private final ArmSubsystem mArmSubsystem;
+  private final double mTargetPosition;
+  private final double mSpeed;
 
-  public TimedOuttakeCommand(IntakeSubsystem intakeSubsystem, double runTime) {
-    mIntakeSubsystem = intakeSubsystem;
-    mRunTime = runTime;
-    addRequirements(intakeSubsystem);
+  /** Creates a new OuterArmCommand. */
+  public WristPosition(ArmSubsystem armSubsystem, double targetPosition, double speed) {
+    mArmSubsystem = armSubsystem;
+    mTargetPosition = targetPosition;
+    mSpeed = speed;
+    addRequirements(armSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    mTimer.reset();
-    mTimer.start();
-    mIntakeSubsystem.regurgitateIntake();
+    mArmSubsystem.setWristPosition(mTargetPosition, mSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,12 +35,11 @@ public class TimedOuttakeCommand extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    mIntakeSubsystem.stopIntake();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return mTimer.hasElapsed(mRunTime);
+    return mArmSubsystem.isWristAtPosition();
   }
 }

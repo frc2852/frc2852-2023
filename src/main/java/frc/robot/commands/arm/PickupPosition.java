@@ -7,25 +7,26 @@ package frc.robot.commands.arm;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ArmPosition;
-import frc.robot.commands.arm.pivots.InnerArmCommand;
-import frc.robot.commands.arm.pivots.OuterArmCommand;
-import frc.robot.commands.arm.pivots.WristCommand;
+import frc.robot.commands.arm.pivots.InnerArmPosition;
+import frc.robot.commands.arm.pivots.OuterArmPosition;
+import frc.robot.commands.arm.pivots.WristPosition;
 import frc.robot.subsystems.ArmSubsystem;
 
-public class HighPickupPositionCommand extends SequentialCommandGroup {
-  public HighPickupPositionCommand(ArmSubsystem armSubsystem) {
+public class PickupPosition extends SequentialCommandGroup {
+  public PickupPosition(ArmSubsystem armSubsystem) {
 
     addCommands(new InstantCommand(() -> {
       if (ArmSubsystem.ARM_POSITION != ArmPosition.DRIVE &&
           ArmSubsystem.ARM_POSITION != ArmPosition.PICK_UP &&
           ArmSubsystem.ARM_POSITION != ArmPosition.HIGH_PICK_UP) {
-        new DrivePositionCommand(armSubsystem).schedule();
+        new InnerArmPosition(armSubsystem, -7.5, 0.1).schedule();
       }
     }));
 
-    ArmSubsystem.ARM_POSITION = ArmPosition.HIGH_PICK_UP;
-    addCommands(new InnerArmCommand(armSubsystem, 14.9, 0.4));
-    addCommands(new WristCommand(armSubsystem, -21.3, 0)); // Test if this can run last, after outerArm
-    addCommands(new OuterArmCommand(armSubsystem, -15.5, 0));
+    ArmSubsystem.ARM_POSITION = ArmPosition.PICK_UP;
+    addCommands(new InnerArmPosition(armSubsystem, 9.75, 0.3));
+    addCommands(new WristPosition(armSubsystem, 35.2, 0));
+    addCommands(new OuterArmPosition(armSubsystem, 11.8, 0));
+    addCommands(new InnerArmPosition(armSubsystem, 5.7, 0.3));
   }
 }
