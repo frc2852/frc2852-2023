@@ -114,7 +114,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public ArmSubsystem() {
     // DO NOT REMOVE OR MODIFY THIS CODE
-    if (!DriverStation.isFMSAttached()) {
+    if (DriverStation.isFMSAttached()) {
       ARM_DEBUG = false;
     }
     // END
