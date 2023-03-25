@@ -27,6 +27,9 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkMaxPIDController outerArmPIDController;
   private RelativeEncoder outerArmEncoder;
 
+  private double outerRotations = 0;
+  private double innerRotations = 0;
+ 
   private CANSparkMax innerArmLeader, innerArmFollower;
   private SparkMaxPIDController innerArmPIDController;
   private RelativeEncoder innerArmEncoder;
@@ -203,15 +206,20 @@ public class ArmSubsystem extends SubsystemBase {
     }
   }
 
+
   private void OuterArmPeriodic() {
     outerArmPIDController.setReference(OUTER_ARM_POSITION, CANSparkMax.ControlType.kSmartMotion);
-    SmartDashboard.putNumber("OuterSetPoint", OUTER_ARM_POSITION);
-    // SmartDashboard.putNumber("OuterPosition", outerArmEncoder.getPosition());
-    // SmartDashboard.putBoolean("Outer Arm Position", isOuterArmAtPosition());
+    outerRotations = SmartDashboard.getNumber("OuterRotation", 0);
+    outerRotations = outerRotations/360;
+    //SmartDashboard.putNumber("OuterSetPoint", OUTER_ARM_POSITION);
+    //SmartDashboard.putNumber("OuterPosition", outerArmEncoder.getPosition());
+    //SmartDashboard.putBoolean("Outer Arm Position", isOuterArmAtPosition());
   }
 
   private void InnerArmPeriodic() {
     innerArmPIDController.setReference(INNER_ARM_POSITION, CANSparkMax.ControlType.kSmartMotion);
+    innerRotations = SmartDashboard.getNumber("InnerRotation", 0);
+    innerRotations = innerRotations/360;
     // SmartDashboard.putNumber("InnerSetPoint", INNER_ARM_POSITION);
     // SmartDashboard.putNumber("InnerPosition", innerArmEncoder.getPosition());
     // SmartDashboard.putBoolean("Inner Arm Position", isInnerArmAtPosition());
@@ -233,8 +241,6 @@ public class ArmSubsystem extends SubsystemBase {
     // double min = SmartDashboard.getNumber(armName + "Min", 0);
     // double ff = SmartDashboard.getNumber(armName + "FF", 0);
 
-    double rotations = SmartDashboard.getNumber(armName + "Rotation", 0);
-
     // Update values
     // if ((p != armPIDController.getP())) {
     // armPIDController.setP(p);
@@ -255,14 +261,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     switch (armName) {
       case "Outer":
-        setOuterArmPosition(rotations, 0);
+        setOuterArmPosition(outerRotations, 0);
         break;
       case "Inner":
-        setInnerArmPosition(rotations, 0);
+        setInnerArmPosition(innerRotations, 0);
         break;
-      case "Wrist":
-        setWristPosition(rotations, 0);
-        break;
+      //case "Wrist":
+      //  setWristPosition(rotations, 0);
+      //  break;
     }
   }
 
