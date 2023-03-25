@@ -60,12 +60,9 @@ public class ArmSubsystem extends SubsystemBase {
   private final double ERROR_RANGE = 0.1;
   private final double TOLERANCE = 1e-2;
 
-  private final double HALL_ENCODER_COUNT = 42; // 8192;
-  private final double TBE_ENCODER_COUNT = 8192;
-
   // This should only be enabled for testing and tuning.
   // Automated positions will not work when enabled
-  private boolean ARM_DEBUG = false;
+  private boolean ARM_DEBUG = true;
 
   // GET
   public boolean isOuterArmAtPosition() {
@@ -80,7 +77,6 @@ public class ArmSubsystem extends SubsystemBase {
     return (Math.abs(WRIST_POSITION - wristEncoder.getPosition()) <= TOLERANCE);
   }
 
-  // SET
   // TODO: After validating smart motion, remove the pivotSpeed from here.
   public void setOuterArmPosition(double position, double pivotSpeed) {
     if (pivotSpeed == 0) {
@@ -131,17 +127,19 @@ public class ArmSubsystem extends SubsystemBase {
   private void initOuterArm() {
     outerArmLeader = initMotor(Constants.OUTER_ARM_LEADER, false, null);
     outerArmFollower = initMotor(Constants.OUTER_ARM_FOLLOWER, false, outerArmLeader);
-    outerArmEncoder = initEncoder(outerArmLeader, 229.5 * HALL_ENCODER_COUNT); // TODO: Change to through bore encoder
+    outerArmEncoder = initEncoder(outerArmLeader, 10);
 
     // PID Controller
     outerArmPIDController = outerArmLeader.getPIDController();
+    outerArmPIDController.setFeedbackDevice(outerArmEncoder);
+
     initPIDController(
         outerArmPIDController,
         "Outer",
-        0.1,
-        0.0000000000001,
-        1.0,
+        5e-4,
+        1e-10,
         0,
+        0.000156,
         -OUTER_ARM_MAX_SPEED,
         OUTER_ARM_MAX_SPEED,
         OUTER_ARM_SMARTMOTION_MAXVEL,
@@ -152,17 +150,17 @@ public class ArmSubsystem extends SubsystemBase {
   private void initInnerArm() {
     innerArmLeader = initMotor(Constants.INNER_ARM_LEADER, true, null);
     innerArmFollower = initMotor(Constants.INNER_ARM_FOLLOWER, true, innerArmLeader);
-    innerArmEncoder = initEncoder(innerArmLeader, 60 * HALL_ENCODER_COUNT); // TODO: Change to through bore encoder
+    innerArmEncoder = initEncoder(innerArmLeader, 160);
 
     // PID Controller
     innerArmPIDController = innerArmLeader.getPIDController();
     initPIDController(
         innerArmPIDController,
         "Inner",
-        0.1,
-        0.0000000001,
-        1.0,
+        5e-4,
+        1e-10,
         0,
+        0.000156,
         -INNER_ARM_MAX_SPEED,
         INNER_ARM_MAX_SPEED,
         INNER_ARM_SMARTMOTION_MAXVEL,
@@ -172,7 +170,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   private void initWrist() {
     wrist = initMotor(Constants.WRIST_MOTOR, true, null);
-    wristEncoder = initEncoder(wrist, 49 * HALL_ENCODER_COUNT);
+    wristEncoder = initHallSensor(wrist);
 
     // PID Controller
     wristPIDController = wrist.getPIDController();
@@ -200,59 +198,60 @@ public class ArmSubsystem extends SubsystemBase {
 
     if (ARM_DEBUG) {
       updateAndSetPidValues("Outer", outerArmPIDController, outerArmEncoder);
-      updateAndSetPidValues("Inner", innerArmPIDController, innerArmEncoder);
-      updateAndSetPidValues("Wrist", wristPIDController, wristEncoder);
+      // updateAndSetPidValues("Inner", innerArmPIDController, innerArmEncoder);
+      // updateAndSetPidValues("Wrist", wristPIDController, wristEncoder);
     }
   }
 
   private void OuterArmPeriodic() {
     outerArmPIDController.setReference(OUTER_ARM_POSITION, CANSparkMax.ControlType.kSmartMotion);
     SmartDashboard.putNumber("OuterSetPoint", OUTER_ARM_POSITION);
-    SmartDashboard.putNumber("OuterPosition", outerArmEncoder.getPosition());
-    SmartDashboard.putBoolean("Outer Arm Position", isOuterArmAtPosition());
+    // SmartDashboard.putNumber("OuterPosition", outerArmEncoder.getPosition());
+    // SmartDashboard.putBoolean("Outer Arm Position", isOuterArmAtPosition());
   }
 
   private void InnerArmPeriodic() {
     innerArmPIDController.setReference(INNER_ARM_POSITION, CANSparkMax.ControlType.kSmartMotion);
-    SmartDashboard.putNumber("InnerSetPoint", INNER_ARM_POSITION);
-    SmartDashboard.putNumber("InnerPosition", innerArmEncoder.getPosition());
-    SmartDashboard.putBoolean("Inner Arm Position", isInnerArmAtPosition());
+    // SmartDashboard.putNumber("InnerSetPoint", INNER_ARM_POSITION);
+    // SmartDashboard.putNumber("InnerPosition", innerArmEncoder.getPosition());
+    // SmartDashboard.putBoolean("Inner Arm Position", isInnerArmAtPosition());
   }
 
   private void WristPeriodic() {
     wristPIDController.setReference(WRIST_POSITION, CANSparkMax.ControlType.kSmartMotion);
-    SmartDashboard.putNumber("WristSetPoint", WRIST_POSITION);
-    SmartDashboard.putNumber("WristPosition", wristEncoder.getPosition());
-    SmartDashboard.putBoolean("wrist Arm Position", isWristAtPosition());
+    // SmartDashboard.putNumber("WristSetPoint", WRIST_POSITION);
+    // SmartDashboard.putNumber("WristPosition", wristEncoder.getPosition());
+    // SmartDashboard.putBoolean("wrist Arm Position", isWristAtPosition());
   }
 
   private void updateAndSetPidValues(String armName, SparkMaxPIDController armPIDController, RelativeEncoder encoder) {
     // Read PID coefficients from SmartDashboard
-    double p = SmartDashboard.getNumber(armName + "P", 0);
-    double i = SmartDashboard.getNumber(armName + "I", 0);
-    double d = SmartDashboard.getNumber(armName + "D", 0);
-    double max = SmartDashboard.getNumber(armName + "Max", 0);
-    double min = SmartDashboard.getNumber(armName + "Min", 0);
-    double ff = SmartDashboard.getNumber(armName + "FF", 0);
+    // double p = SmartDashboard.getNumber(armName + "P", 0);
+    // double i = SmartDashboard.getNumber(armName + "I", 0);
+    // double d = SmartDashboard.getNumber(armName + "D", 0);
+    // double max = SmartDashboard.getNumber(armName + "Max", 0);
+    // double min = SmartDashboard.getNumber(armName + "Min", 0);
+    // double ff = SmartDashboard.getNumber(armName + "FF", 0);
 
     double rotations = SmartDashboard.getNumber(armName + "Rotation", 0);
 
     // Update values
-    if ((p != armPIDController.getP())) {
-      armPIDController.setP(p);
-    }
-    if ((i != armPIDController.getI())) {
-      armPIDController.setI(i);
-    }
-    if ((d != armPIDController.getD())) {
-      armPIDController.setD(d);
-    }
-    if ((max != armPIDController.getOutputMax()) || (min != armPIDController.getOutputMin())) {
-      armPIDController.setOutputRange(min, max);
-    }
-    if ((ff != armPIDController.getFF())) {
-      armPIDController.setFF(ff);
-    }
+    // if ((p != armPIDController.getP())) {
+    // armPIDController.setP(p);
+    // }
+    // if ((i != armPIDController.getI())) {
+    // armPIDController.setI(i);
+    // }
+    // if ((d != armPIDController.getD())) {
+    // armPIDController.setD(d);
+    // }
+    // if ((max != armPIDController.getOutputMax()) || (min !=
+    // armPIDController.getOutputMin())) {
+    // armPIDController.setOutputRange(min, max);
+    // }
+    // if ((ff != armPIDController.getFF())) {
+    // armPIDController.setFF(ff);
+    // }
 
     switch (armName) {
       case "Outer":
@@ -289,10 +288,15 @@ public class ArmSubsystem extends SubsystemBase {
     return motor;
   }
 
-  private RelativeEncoder initEncoder(CANSparkMax motor, double conversionFactor) {
+  private RelativeEncoder initEncoder(CANSparkMax motor, double gearRatio) {
+    RelativeEncoder encoder = motor.getAlternateEncoder(8192);
+    encoder.setPosition(0);
+    return encoder;
+  }
+
+  private RelativeEncoder initHallSensor(CANSparkMax motor) {
     RelativeEncoder encoder = motor.getEncoder();
     encoder.setPosition(0);
-    encoder.setPositionConversionFactor(conversionFactor);
     return encoder;
   }
 
@@ -321,13 +325,18 @@ public class ArmSubsystem extends SubsystemBase {
     armPIDController.setSmartMotionMaxAccel(maxAccel, 0);
     armPIDController.setSmartMotionAllowedClosedLoopError(errorRange, 0);
 
+    armPIDController.setSmartMotionMaxVelocity(maxVelocity, 0);
+    armPIDController.setSmartMotionMinOutputVelocity(0, 0);
+    armPIDController.setSmartMotionMaxAccel(maxAccel, 0);
+    armPIDController.setSmartMotionAllowedClosedLoopError(0, 0);
+
     // Display PID
-    SmartDashboard.putNumber(armName + "P", p);
-    SmartDashboard.putNumber(armName + "I", i);
-    SmartDashboard.putNumber(armName + "D", d);
-    SmartDashboard.putNumber(armName + "Max", maxOutput);
-    SmartDashboard.putNumber(armName + "Min", minOutput);
-    SmartDashboard.putNumber(armName + "FF", ff);
+    // SmartDashboard.putNumber(armName + "P", p);
+    // SmartDashboard.putNumber(armName + "I", i);
+    // SmartDashboard.putNumber(armName + "D", d);
+    // SmartDashboard.putNumber(armName + "Max", maxOutput);
+    // SmartDashboard.putNumber(armName + "Min", minOutput);
+    // SmartDashboard.putNumber(armName + "FF", ff);
     SmartDashboard.putNumber(armName + "Rotation", 0);
   }
 

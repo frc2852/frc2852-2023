@@ -64,9 +64,9 @@ public final class Constants {
 
   public static final double WHEEL_DIAMETER_INCHES = 6.0;
   public static final double GEAR_RATIO = 15.0;
-  public static final double COUNTS_PER_REVOLUTION = 8192.0; // TODO: Change to 42 if using the hall sensor
+  public static final int TBE_TICKS = 8192;
   public static final double WHEEL_CIRCUMFERENCE = Math.PI * WHEEL_DIAMETER_INCHES;
-  public static final double COUNTS_PER_WHEEL_REVOLUTION = COUNTS_PER_REVOLUTION * GEAR_RATIO;
+  public static final double COUNTS_PER_WHEEL_REVOLUTION = TBE_TICKS * GEAR_RATIO;
   public static final double DRIVE_ENCODER_CONVERSION_FACTOR = COUNTS_PER_WHEEL_REVOLUTION / WHEEL_CIRCUMFERENCE;
 
   public static final int ONE_FOOT = 12;
