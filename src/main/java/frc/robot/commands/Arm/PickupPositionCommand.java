@@ -21,9 +21,10 @@ public class PickupPositionCommand extends SequentialCommandGroup {
     }
 
     ArmSubsystem.armPosition = ArmPosition.PICK_UP;
-    addCommands(new InnerArmCommand(armSubsystem, 9.75, 0.3));
-    addCommands(new WristCommand(armSubsystem, 35.2, 0)); //Test if this can run last, after outerArm
-    addCommands(new OuterArmCommand(armSubsystem, 11.8, 0));
+    addCommands(new InnerArmCommand(armSubsystem, 19, 0.5));
+    addCommands(new OuterArmCommand(armSubsystem, 10, 0));
+    addCommands(new WristCommand(armSubsystem, 37, 0)); //Test if this can run last, after outerArm
+
     //addCommands(new InnerArmCommand(armSubsystem, 5.7, 0.3));
   }
 }

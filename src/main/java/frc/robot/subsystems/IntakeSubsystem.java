@@ -17,13 +17,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
     private DoubleSolenoid mIntakeSolenoid;
 
-    private static final double MAX_INTAKE_SPEED = 0.25;
+    private static final double MAX_INTAKE_SPEED = 1.0;
     private static final double MAX_OUTTAKE_SPEED = 1.0;
     private static final double INTAKE_STALL_CURRENT = 24;
 
     public IntakeSubsystem() {
         mLeftIntake = new CANSparkMax(Constants.INTAKE_LEFT_BOTTOM, MotorType.kBrushless);
-        mLeftIntake.setInverted(false);
+        mLeftIntake.setInverted(true);
         mLeftIntake.setIdleMode(IdleMode.kBrake);
         mLeftIntake.enableVoltageCompensation(12.0);
         mLeftIntake.burnFlash();
@@ -33,7 +33,7 @@ public class IntakeSubsystem extends SubsystemBase {
         mLeftIntake.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 500);
 
         mRightIntake = new CANSparkMax(Constants.INTAKE_RIGHT_BOTTOM, MotorType.kBrushless);
-        mRightIntake.setInverted(true);
+        mRightIntake.setInverted(false);
         mRightIntake.setIdleMode(IdleMode.kBrake);
         mRightIntake.enableVoltageCompensation(12.0);
         mRightIntake.burnFlash();

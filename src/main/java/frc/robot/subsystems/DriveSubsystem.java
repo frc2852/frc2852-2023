@@ -145,7 +145,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void ArcadeDrive(double xSpeed, double zRotation) {
     if (DriverStation.isTeleop()) {
-      mDifferentialDrive.arcadeDrive(xSpeed, zRotation);
+      mDifferentialDrive.arcadeDrive(xSpeed * 1.0, zRotation * 1.0);
     }
   }
 

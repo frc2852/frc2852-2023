@@ -40,8 +40,8 @@ public final class Constants {
   public static final int INTAKE_CLOSE = 12;
 
   // Arm
-  public static final int OUTER_ARM_LEADER = 9;
-  public static final int OUTER_ARM_FOLLOWER = 8;
+  public static final int OUTER_ARM_LEADER = 8;
+  public static final int OUTER_ARM_FOLLOWER = 9;
 
   public static final int INNER_ARM_LEADER = 10;
   public static final int INNER_ARM_FOLLOWER = 11;

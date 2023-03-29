@@ -55,7 +55,8 @@ public class ArmSubsystem extends SubsystemBase {
   private final double INNER_ARM_MAX_SPEED = 0.2;
   private final double WRIST_MAX_SPEED = 0.2;
 
-  public static ArmPosition armPosition = ArmPosition.DRIVE; 
+  public static ArmPosition armPosition = ArmPosition.DRIVE;
+
   public ArmSubsystem() {
     InitializeOuterArm();
     InitializeInnerArm();
@@ -139,14 +140,14 @@ public class ArmSubsystem extends SubsystemBase {
 
     // PID Controller
     outerArmPIDController = outerArmLeader.getPIDController();
-
+    
     // Encoder
     outerArmEncoder = outerArmLeader.getEncoder();
     outerArmEncoder.setPosition(0);
 
     // PID defaults
     outerP = 0.1;
-    outerI = 0.0000000000001;
+    outerI = 0.0000000001;
     outerD = 1.0;
     outerMax = OUTER_ARM_MAX_SPEED;
     outerMin = -OUTER_ARM_MAX_SPEED;
@@ -160,12 +161,10 @@ public class ArmSubsystem extends SubsystemBase {
     outerArmPIDController.setOutputRange(outerMin, outerMax);
 
     // Display PID
-     SmartDashboard.putNumber("OuterP", outerP);
-     SmartDashboard.putNumber("OuterI", outerI);
-     SmartDashboard.putNumber("OuterD", outerD);
-     SmartDashboard.putNumber("OuterMax", outerMax);
-     SmartDashboard.putNumber("OuterMin", outerMin);
-     SmartDashboard.putNumber("OuterRotation", 0);
+    SmartDashboard.putNumber("OuterP", outerP);
+    SmartDashboard.putNumber("OuterI", outerI);
+    SmartDashboard.putNumber("OuterD", outerD);
+    SmartDashboard.putNumber("OuterRotation", 0);
   }
 
   private void InitializeInnerArm() {
@@ -206,11 +205,11 @@ public class ArmSubsystem extends SubsystemBase {
     innerArmPIDController.setOutputRange(innerMin, innerMax);
 
     // Display PID
-    SmartDashboard.putNumber("InnerP", innerP);
-    SmartDashboard.putNumber("InnerI", innerI);
-    SmartDashboard.putNumber("InnerD", innerD);
-    SmartDashboard.putNumber("InnerMax", innerMax);
-    SmartDashboard.putNumber("InnerMin", innerMin);
+    // SmartDashboard.putNumber("InnerP", innerP);
+    // SmartDashboard.putNumber("InnerI", innerI);
+    // SmartDashboard.putNumber("InnerD", innerD);
+    // SmartDashboard.putNumber("InnerMax", innerMax);
+    // SmartDashboard.putNumber("InnerMin", innerMin);
     SmartDashboard.putNumber("InnerRotation", 0);
   }
 
@@ -284,8 +283,6 @@ public class ArmSubsystem extends SubsystemBase {
     double p = SmartDashboard.getNumber("OuterP", 0);
     double i = SmartDashboard.getNumber("OuterI", 0);
     double d = SmartDashboard.getNumber("OuterD", 0);
-    double max = SmartDashboard.getNumber("OuterMax", 0);
-    double min = SmartDashboard.getNumber("OuterMin", 0);
 
     double rotations = SmartDashboard.getNumber("OuterRotation", 0);
 
@@ -303,12 +300,6 @@ public class ArmSubsystem extends SubsystemBase {
       outerD = d;
     }
 
-    if ((max != outerMax) || (min != outerMin)) {
-      outerArmPIDController.setOutputRange(min, max);
-      outerMin = min;
-      outerMax = max;
-    }
-
     SetOuterArmPosition(rotations, 0);
   }
 
@@ -320,33 +311,33 @@ public class ArmSubsystem extends SubsystemBase {
    */
   private void InnerArmDebugPeriodic() {
     // Read PID coefficients from SmartDashboard
-    double p = SmartDashboard.getNumber("InnerP", 0);
-    double i = SmartDashboard.getNumber("InnerI", 0);
-    double d = SmartDashboard.getNumber("InnerD", 0);
-    double max = SmartDashboard.getNumber("InnerMax", 0);
-    double min = SmartDashboard.getNumber("InnerMin", 0);
+    // double p = SmartDashboard.getNumber("InnerP", 0);
+    // double i = SmartDashboard.getNumber("InnerI", 0);
+    // double d = SmartDashboard.getNumber("InnerD", 0);
+    // double max = SmartDashboard.getNumber("InnerMax", 0);
+    // double min = SmartDashboard.getNumber("InnerMin", 0);
 
     double rotations = SmartDashboard.getNumber("InnerRotation", 0);
 
-    // Update values
-    if ((p != innerP)) {
-      innerArmPIDController.setP(p);
-      innerP = p;
-    }
-    if ((i != innerI)) {
-      innerArmPIDController.setI(i);
-      innerI = i;
-    }
-    if ((d != innerD)) {
-      innerArmPIDController.setD(d);
-      innerD = d;
-    }
+    // // Update values
+    // if ((p != innerP)) {
+    //   innerArmPIDController.setP(p);
+    //   innerP = p;
+    // }
+    // if ((i != innerI)) {
+    //   innerArmPIDController.setI(i);
+    //   innerI = i;
+    // }
+    // if ((d != innerD)) {
+    //   innerArmPIDController.setD(d);
+    //   innerD = d;
+    // }
 
-    if ((max != innerMax) || (min != innerMin)) {
-      innerArmPIDController.setOutputRange(min, max);
-      innerMin = min;
-      innerMax = max;
-    }
+    // if ((max != innerMax) || (min != innerMin)) {
+    //   innerArmPIDController.setOutputRange(min, max);
+    //   innerMin = min;
+    //   innerMax = max;
+    // }
 
     SetInnerArmPosition(rotations, 0);
   }
@@ -362,12 +353,12 @@ public class ArmSubsystem extends SubsystemBase {
     double p = SmartDashboard.getNumber("WristP", 0);
     double i = SmartDashboard.getNumber("WristI", 0);
     double d = SmartDashboard.getNumber("WristD", 0);
-    double max = SmartDashboard.getNumber("WristMax", 0);
-    double min = SmartDashboard.getNumber("WristMin", 0);
+    // double max = SmartDashboard.getNumber("WristMax", 0);
+    // double min = SmartDashboard.getNumber("WristMin", 0);
 
     double rotations = SmartDashboard.getNumber("WristRotation", 0);
 
-    // Update values
+    // // Update values
     if ((p != wristP)) {
       wristPIDController.setP(p);
       wristP = p;
@@ -381,11 +372,11 @@ public class ArmSubsystem extends SubsystemBase {
       wristD = d;
     }
 
-    if ((max != wristMax) || (min != wristMin)) {
-      wristPIDController.setOutputRange(min, max);
-      wristMin = min;
-      wristMax = max;
-    }
+    // if ((max != wristMax) || (min != wristMin)) {
+    //   wristPIDController.setOutputRange(min, max);
+    //   wristMin = min;
+    //   wristMax = max;
+    // }
 
     SetWristPosition(rotations, 0);
   }
