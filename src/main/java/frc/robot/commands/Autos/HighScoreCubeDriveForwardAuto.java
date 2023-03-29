@@ -7,6 +7,7 @@ package frc.robot.commands.autos;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.Arm.DrivePositionCommand;
+import frc.robot.commands.Arm.PickupPositionCommand;
 import frc.robot.commands.Arm.ScorePositionHighCubeCommand;
 import frc.robot.commands.drive.DriveForwardDistanceCommand;
 import frc.robot.commands.Intake.TimedOuttakeCommand;
@@ -28,5 +29,7 @@ public class HighScoreCubeDriveForwardAuto extends SequentialCommandGroup {
     addCommands(new DrivePositionCommand(armSubsystem));
 
     addCommands(new DriveForwardDistanceCommand(driveSubsystem, Constants.ONE_FOOT * 16, 0));
+
+    addCommands(new PickupPositionCommand(armSubsystem));
   }
 }

@@ -147,7 +147,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // PID defaults
     outerP = 0.1;
-    outerI = 0.0000000001;
+    outerI = 0;//0.0000000001;
     outerD = 1.0;
     outerMax = OUTER_ARM_MAX_SPEED;
     outerMin = -OUTER_ARM_MAX_SPEED;
@@ -161,9 +161,9 @@ public class ArmSubsystem extends SubsystemBase {
     outerArmPIDController.setOutputRange(outerMin, outerMax);
 
     // Display PID
-    SmartDashboard.putNumber("OuterP", outerP);
-    SmartDashboard.putNumber("OuterI", outerI);
-    SmartDashboard.putNumber("OuterD", outerD);
+    // SmartDashboard.putNumber("OuterP", outerP);
+    // SmartDashboard.putNumber("OuterI", outerI);
+    // SmartDashboard.putNumber("OuterD", outerD);
     SmartDashboard.putNumber("OuterRotation", 0);
   }
 
@@ -191,7 +191,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     // PID defaults
     innerP = 0.1;
-    innerI = 0.0000000001;
+    innerI = 0; //0.0000000001;
     innerD = 1.0;
     innerMax = INNER_ARM_MAX_SPEED;
     innerMin = -INNER_ARM_MAX_SPEED;
@@ -243,11 +243,11 @@ public class ArmSubsystem extends SubsystemBase {
     wristPIDController.setOutputRange(wristMin, wristMax);
 
     // Display PID
-    SmartDashboard.putNumber("WristP", wristP);
-    SmartDashboard.putNumber("WristI", wristI);
-    SmartDashboard.putNumber("WristD", wristD);
-    SmartDashboard.putNumber("WristMax", wristMax);
-    SmartDashboard.putNumber("WristMin", wristMin);
+    // SmartDashboard.putNumber("WristP", wristP);
+    // SmartDashboard.putNumber("WristI", wristI);
+    // SmartDashboard.putNumber("WristD", wristD);
+    // SmartDashboard.putNumber("WristMax", wristMax);
+    // SmartDashboard.putNumber("WristMin", wristMin);
     SmartDashboard.putNumber("WristRotation", 0);
   }
 
@@ -280,25 +280,25 @@ public class ArmSubsystem extends SubsystemBase {
    */
   private void OuterArmDebugPeriodic() {
     // Read PID coefficients from SmartDashboard
-    double p = SmartDashboard.getNumber("OuterP", 0);
-    double i = SmartDashboard.getNumber("OuterI", 0);
-    double d = SmartDashboard.getNumber("OuterD", 0);
+    // double p = SmartDashboard.getNumber("OuterP", 0);
+    // double i = SmartDashboard.getNumber("OuterI", 0);
+    // double d = SmartDashboard.getNumber("OuterD", 0);
 
     double rotations = SmartDashboard.getNumber("OuterRotation", 0);
 
-    // Update values
-    if ((p != outerP)) {
-      outerArmPIDController.setP(p);
-      outerP = p;
-    }
-    if ((i != outerI)) {
-      outerArmPIDController.setI(i);
-      outerI = i;
-    }
-    if ((d != outerD)) {
-      outerArmPIDController.setD(d);
-      outerD = d;
-    }
+    // // Update values
+    // if ((p != outerP)) {
+    //   outerArmPIDController.setP(p);
+    //   outerP = p;
+    // }
+    // if ((i != outerI)) {
+    //   outerArmPIDController.setI(i);
+    //   outerI = i;
+    // }
+    // if ((d != outerD)) {
+    //   outerArmPIDController.setD(d);
+    //   outerD = d;
+    // }
 
     SetOuterArmPosition(rotations, 0);
   }
@@ -350,27 +350,27 @@ public class ArmSubsystem extends SubsystemBase {
    */
   private void WristDebugPeriodic() {
     // Read PID coefficients from SmartDashboard
-    double p = SmartDashboard.getNumber("WristP", 0);
-    double i = SmartDashboard.getNumber("WristI", 0);
-    double d = SmartDashboard.getNumber("WristD", 0);
+    // double p = SmartDashboard.getNumber("WristP", 0);
+    // double i = SmartDashboard.getNumber("WristI", 0);
+    // double d = SmartDashboard.getNumber("WristD", 0);
     // double max = SmartDashboard.getNumber("WristMax", 0);
     // double min = SmartDashboard.getNumber("WristMin", 0);
 
     double rotations = SmartDashboard.getNumber("WristRotation", 0);
 
     // // Update values
-    if ((p != wristP)) {
-      wristPIDController.setP(p);
-      wristP = p;
-    }
-    if ((i != wristI)) {
-      wristPIDController.setI(i);
-      wristI = i;
-    }
-    if ((d != wristD)) {
-      wristPIDController.setD(d);
-      wristD = d;
-    }
+    // if ((p != wristP)) {
+    //   wristPIDController.setP(p);
+    //   wristP = p;
+    // }
+    // if ((i != wristI)) {
+    //   wristPIDController.setI(i);
+    //   wristI = i;
+    // }
+    // if ((d != wristD)) {
+    //   wristPIDController.setD(d);
+    //   wristD = d;
+    // }
 
     // if ((max != wristMax) || (min != wristMin)) {
     //   wristPIDController.setOutputRange(min, max);
@@ -380,6 +380,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     SetWristPosition(rotations, 0);
   }
+
 
   private void setArmSolenoid(Value solenoidPosition) {
     mArmIsLocked = (solenoidPosition == DoubleSolenoid.Value.kForward);
