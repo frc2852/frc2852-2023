@@ -53,7 +53,7 @@ public final class Constants {
 
   // Gearbox
   public static final int DRIVE_GEAR_BOX_OPEN = 5;
-  public static final int DRIVE_GEAR_BOX_CLOSE = 10;
+  public static final int DRIVE_GEAR_BOX_CLOSE = 9;
 
   // Voltage
   public static final double DRIVE_VOLTAGE_RAMP_RATE = 0;
